@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Katalog CV | WriteHub</title>
     
+    <!-- Tailwind CDN (dengan script config) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
@@ -12,16 +13,24 @@
 
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { brand: '#221E82' } } }
+            content: [],
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#221E82'
+                    }
+                }
+            }
         }
     </script>
 </head>
 <body class="bg-gray-50 font-sans">
 
-    <nav class="fixed top-0 w-full bg-white shadow-sm z-50">
+    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur shadow-sm z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzgVAIKgZMS9W7eJKCaRyaFnoDviThQstfeD9l9mcwPxUDoovGo7xB3RQByxTXo15fGX0DIeTMxOWkVovnB4FC35iJN6ArGLOlBRI9U4d4gJ7VOTOp-Ki47RIaViiIs12QGjxRmGs2cQzCFniRpBE0GyNLW3s_03rvTcpPeHAruMaUdrIKNX8jaFZ1TcBw/s3264/28063.png" alt="Logo" class="h-12">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzgVAIKgZMS9W7eJKCaRyaFnoDviThQstfeD9l9mcwPxUDoovGo7xB3RQByxTXo15fGX0DIeTMxOWkVovnB4FC35iJN6ArGLOlBRI9U4d4gJ7VOTOp-Ki47RIaViiIs12QGjxRmGs2cQzCFniRpBE0GyNLW3s_03rvTcpPeHAruMaUdrIKNX8jaFZ1TcBw/s3264/28063.png" 
+                     alt="WriteHub" class="h-12">
                 <span class="text-2xl font-bold text-brand">WriteHub</span>
             </div>
         </div>
@@ -30,8 +39,8 @@
     <section class="pt-28 pb-12 px-6 max-w-7xl mx-auto">
         <h1 class="text-4xl font-bold text-center mb-10">Katalog Paket CV</h1>
 
-        <div id="status" class="text-center mb-8"></div>
-        <div id="loading" class="hidden py-12 text-center">
+        <div id="status" class="text-center mb-8 min-h-[60px]"></div>
+        <div id="loading" class="py-12 text-center">
             <div class="inline-block w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
             <p class="mt-3 text-gray-500">Menghubungkan ke database...</p>
         </div>
@@ -39,28 +48,21 @@
         <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </section>
 
-    <!-- Load Supabase dulu -->
+    <!-- Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <script>
-        // ================== KONFIGURASI ==================
-        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';   // GANTI INI
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';                         // GANTI INI FULL KEY
+        // ================== GANTI INI ==================
+        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
 
-        let allProducts = [];
-
-        // Tunggu Supabase loaded
-        async function initApp() {
+        async function fetchProducts() {
             const status = document.getElementById('status');
             const loading = document.getElementById('loading');
+            const grid = document.getElementById('product-grid');
 
-            if (typeof window.supabase === "undefined") {
-                status.innerHTML = `<span class="bg-red-100 text-red-700 px-5 py-3 rounded-2xl">❌ Supabase library gagal dimuat</span>`;
-                loadDummyData();
-                return;
-            }
-
-            loading.classList.remove('hidden');
+            loading.style.display = 'block';
+            grid.innerHTML = '';
 
             try {
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -68,57 +70,58 @@
                 const { data, error } = await supabase
                     .from('products')
                     .select('*')
-                    .order('id');
+                    .order('id', { ascending: true });
 
-                loading.classList.add('hidden');
+                loading.style.display = 'none';
 
                 if (error) throw error;
 
                 if (data && data.length > 0) {
-                    allProducts = data;
-                    status.innerHTML = `<span class="bg-green-100 text-green-700 px-5 py-3 rounded-2xl">✅ Berhasil memuat ${data.length} produk</span>`;
+                    status.innerHTML = `<span class="bg-green-100 text-green-700 px-6 py-3 rounded-3xl text-sm font-medium">✅ Berhasil memuat ${data.length} paket CV</span>`;
                     renderProducts(data);
                 } else {
-                    status.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-5 py-3 rounded-2xl">⚠️ Tidak ada data, menggunakan contoh</span>`;
+                    status.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-6 py-3 rounded-3xl text-sm font-medium">⚠️ Belum ada data, menampilkan contoh</span>`;
                     loadDummyData();
                 }
             } catch (err) {
-                loading.classList.add('hidden');
-                console.error(err);
-                
-                let msg = "Gagal mengambil data";
-                if (err.message.includes("Failed to fetch")) msg = "❌ Cek URL Supabase";
-                if (err.message.includes("JWT") || err.message.includes("apikey")) msg = "❌ Anon Key salah";
+                loading.style.display = 'none';
+                console.error("Error:", err);
 
-                status.innerHTML = `<span class="bg-red-100 text-red-700 px-5 py-3 rounded-2xl">${msg}</span>`;
+                status.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-5 rounded-3xl max-w-md mx-auto">
+                        <p class="font-medium">Gagal mengambil data dari Supabase</p>
+                        <p class="text-xs mt-2">${err.message}</p>
+                    </div>`;
+                
                 loadDummyData();
             }
         }
 
         function loadDummyData() {
-            allProducts = [
-                { name: "CV Fresh Graduate", category: "fresher", price: "Rp 99.000", description: "Desain modern & ATS Friendly", image_url: "https://images.unsplash.com/photo-1586281380349-632531db7ed4", tag: "Best Seller" },
-                { name: "CV Professional", category: "experienced", price: "Rp 199.000", description: "Untuk kandidat berpengalaman", image_url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113", tag: "Rekomendasi" },
-                { name: "CV Executive", category: "experienced", price: "Rp 350.000", description: "Level Manager & Director", image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978" },
+            const dummy = [
+                { name: "CV Fresh Graduate", price: "Rp 99.000", description: "Desain bersih, ATS Friendly, cocok untuk lulusan baru.", image_url: "https://images.unsplash.com/photo-1586281380349-632531db7ed4" },
+                { name: "CV Professional", price: "Rp 199.000", description: "Highlight pengalaman kerja dan pencapaian.", image_url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113" },
+                { name: "CV Executive", price: "Rp 350.000", description: "Untuk level manajerial dan direktur.", image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978" }
             ];
-            renderProducts(allProducts);
+            renderProducts(dummy);
         }
 
         function renderProducts(products) {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
 
-            products.forEach(p => {
-                const waLink = `https://wa.me/6288219673570?text=Halo%20Admin,%20saya%20mau%20pesan%20${encodeURIComponent(p.name)}`;
+            products.forEach(product => {
+                const waLink = `https://wa.me/6288219673570?text=Halo%20Admin,%20saya%20mau%20pesan%20${encodeURIComponent(product.name)}`;
                 
                 grid.innerHTML += `
-                    <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all">
-                        <img src="${p.image_url || 'https://via.placeholder.com/600x400'}" class="w-full h-52 object-cover">
+                    <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+                        <img src="${product.image_url}" class="w-full h-52 object-cover">
                         <div class="p-6">
-                            <h3 class="font-bold text-xl mb-1">${p.name}</h3>
-                            <p class="text-3xl font-bold text-brand my-3">${p.price}</p>
-                            <p class="text-gray-600 text-sm line-clamp-3">${p.description}</p>
-                            <a href="${waLink}" target="_blank" class="mt-6 block bg-green-500 hover:bg-green-600 text-white text-center font-semibold py-4 rounded-2xl transition">
+                            <h3 class="text-xl font-bold">${product.name}</h3>
+                            <p class="text-3xl font-bold text-brand mt-2 mb-3">${product.price}</p>
+                            <p class="text-gray-600 text-sm line-clamp-3">${product.description}</p>
+                            <a href="${waLink}" target="_blank" 
+                               class="mt-6 w-full block text-center bg-green-500 hover:bg-green-600 text-white font-semibold py-4 rounded-2xl transition">
                                 <i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp
                             </a>
                         </div>
@@ -127,8 +130,8 @@
             });
         }
 
-        // Jalankan setelah semua script selesai load
-        window.onload = initApp;
+        // Start
+        window.onload = fetchProducts;
     </script>
 </body>
 </html>
