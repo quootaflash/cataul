@@ -11,12 +11,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
 
     <script>
-        tailwind.config = { theme: { extend: { colors: { brand: '#221E82' }}}} 
+        tailwind.config = {
+            theme: { extend: { colors: { brand: '#221E82' } } }
+        }
     </script>
-
-    <style>
-        .card-hover:hover { transform: translateY(-12px); box-shadow: 0 25px 50px -12px rgb(34 30 130 / 0.2); }
-    </style>
 </head>
 <body class="bg-gray-50 font-sans">
 
@@ -41,65 +39,58 @@
         <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </section>
 
+    <!-- Load Supabase dulu -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
     <script>
-        // ============== GANTI DENGAN DATA ANDA ==============
-        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';   // ← GANTI
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';                        // ← GANTI FULL KEY
+        // ================== KONFIGURASI ==================
+        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';   // GANTI INI
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';                         // GANTI INI FULL KEY
 
         let allProducts = [];
 
-        async function fetchProducts() {
-            const loading = document.getElementById('loading');
+        // Tunggu Supabase loaded
+        async function initApp() {
             const status = document.getElementById('status');
+            const loading = document.getElementById('loading');
+
+            if (typeof window.supabase === "undefined") {
+                status.innerHTML = `<span class="bg-red-100 text-red-700 px-5 py-3 rounded-2xl">❌ Supabase library gagal dimuat</span>`;
+                loadDummyData();
+                return;
+            }
+
             loading.classList.remove('hidden');
 
             try {
-                if (!SUPABASE_URL.includes('.supabase.co')) {
-                    throw new Error("SUPABASE_URL belum diisi dengan benar");
-                }
-
                 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
                 const { data, error } = await supabase
-                    .from('products')           // pastikan nama tabel benar
-                    .select('*');
+                    .from('products')
+                    .select('*')
+                    .order('id');
 
                 loading.classList.add('hidden');
 
-                if (error) {
-                    console.error("Supabase Error:", error);
-                    throw error;
-                }
+                if (error) throw error;
 
                 if (data && data.length > 0) {
                     allProducts = data;
-                    status.innerHTML = `<span class="bg-green-100 text-green-700 px-5 py-2 rounded-2xl text-sm">✅ Berhasil memuat ${data.length} produk</span>`;
+                    status.innerHTML = `<span class="bg-green-100 text-green-700 px-5 py-3 rounded-2xl">✅ Berhasil memuat ${data.length} produk</span>`;
                     renderProducts(data);
                 } else {
-                    status.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-5 py-2 rounded-2xl text-sm">⚠️ Database kosong, menggunakan data contoh</span>`;
+                    status.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-5 py-3 rounded-2xl">⚠️ Tidak ada data, menggunakan contoh</span>`;
                     loadDummyData();
                 }
-
             } catch (err) {
                 loading.classList.add('hidden');
-                console.error("Full Error:", err);
-
-                let errorMsg = "Gagal mengambil data dari Supabase";
-
-                if (err.message.includes("Failed to fetch")) {
-                    errorMsg = "❌ Koneksi gagal - Periksa URL Supabase";
-                } else if (err.code === 'PGRST301') {
-                    errorMsg = "❌ Tabel 'products' tidak ditemukan";
-                } else if (err.message.includes("JWT")) {
-                    errorMsg = "❌ Anon Key salah atau expired";
-                }
-
-                status.innerHTML = `
-                    <div class="bg-red-100 text-red-700 p-5 rounded-3xl max-w-md mx-auto text-left">
-                        <strong>${errorMsg}</strong><br>
-                        <small class="block mt-2">${err.message}</small>
-                    </div>`;
+                console.error(err);
                 
+                let msg = "Gagal mengambil data";
+                if (err.message.includes("Failed to fetch")) msg = "❌ Cek URL Supabase";
+                if (err.message.includes("JWT") || err.message.includes("apikey")) msg = "❌ Anon Key salah";
+
+                status.innerHTML = `<span class="bg-red-100 text-red-700 px-5 py-3 rounded-2xl">${msg}</span>`;
                 loadDummyData();
             }
         }
@@ -117,19 +108,18 @@
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
 
-            products.forEach(product => {
-                const waLink = `https://wa.me/6288219673570?text=Halo,%20saya%20mau%20pesan%20${encodeURIComponent(product.name)}`;
+            products.forEach(p => {
+                const waLink = `https://wa.me/6288219673570?text=Halo%20Admin,%20saya%20mau%20pesan%20${encodeURIComponent(p.name)}`;
                 
                 grid.innerHTML += `
-                    <div class="card-hover bg-white rounded-3xl overflow-hidden border border-gray-100">
-                        <img src="${product.image_url || 'https://via.placeholder.com/600x400'}" class="w-full h-52 object-cover">
+                    <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all">
+                        <img src="${p.image_url || 'https://via.placeholder.com/600x400'}" class="w-full h-52 object-cover">
                         <div class="p-6">
-                            <h3 class="font-bold text-xl">${product.name}</h3>
-                            <p class="text-2xl font-bold text-brand my-3">${product.price}</p>
-                            <p class="text-gray-600 text-sm line-clamp-3">${product.description}</p>
-                            <a href="${waLink}" target="_blank" 
-                               class="mt-6 block text-center bg-green-500 hover:bg-green-600 text-white font-semibold py-4 rounded-2xl">
-                                Pesan via WhatsApp
+                            <h3 class="font-bold text-xl mb-1">${p.name}</h3>
+                            <p class="text-3xl font-bold text-brand my-3">${p.price}</p>
+                            <p class="text-gray-600 text-sm line-clamp-3">${p.description}</p>
+                            <a href="${waLink}" target="_blank" class="mt-6 block bg-green-500 hover:bg-green-600 text-white text-center font-semibold py-4 rounded-2xl transition">
+                                <i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp
                             </a>
                         </div>
                     </div>
@@ -137,11 +127,8 @@
             });
         }
 
-        // Jalankan
-        document.addEventListener('DOMContentLoaded', () => {
-            AOS.init();
-            fetchProducts();
-        });
+        // Jalankan setelah semua script selesai load
+        window.onload = initApp;
     </script>
 </body>
 </html>
