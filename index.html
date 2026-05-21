@@ -4,357 +4,242 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Katalog CV | WriteHub</title>
-    
-    <!-- Tailwind CSS -->
+   
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- AOS Animation -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-    
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Supabase JS Client -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        brand: {
-                            DEFAULT: '#221E82', 
-                            dark: '#1a174e',
-                            light: '#3833a0',
-                            accent: '#F59E0B'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
-                        'glow': '0 0 20px rgba(34, 30, 130, 0.3)'
-                    }
+                    colors: { brand: { DEFAULT: '#221E82', dark: '#1a174e', light: '#3833a0', accent: '#F59E0B' }},
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }
                 }
             }
         }
     </script>
-    
+
     <style>
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* 3D Tilt Effect */
-        .tilt-card { transform-style: preserve-3d; transform: perspective(1000px); transition: transform 0.1s ease-out; }
-        
-        /* Loading Spinner */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #221E82;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .tilt-card { transform-style: preserve-3d; transition: transform 0.2s ease-out; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #221E82; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="font-sans text-gray-800 antialiased bg-gray-50 selection:bg-brand selection:text-white">
+<body class="font-sans text-gray-800 antialiased bg-gray-50">
 
-    <!-- HEADER / NAVBAR -->
-    <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+    <!-- HEADER -->
+    <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="flex items-center gap-3">
-                <!-- LOGO ASLI WRITEHUB (TIDAK DI GANTI) -->
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzgVAIKgZMS9W7eJKCaRyaFnoDviThQstfeD9l9mcwPxUDoovGo7xB3RQByxTXo15fGX0DIeTMxOWkVovnB4FC35iJN6ArGLOlBRI9U4d4gJ7VOTOp-Ki47RIaViiIs12QGjxRmGs2cQzCFniRpBE0GyNLW3s_03rvTcpPeHAruMaUdrIKNX8jaFZ1TcBw/s3264/28063.png" alt="Logo WriteHub" class="h-14 md:h-16 w-auto object-contain">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzgVAIKgZMS9W7eJKCaRyaFnoDviThQstfeD9l9mcwPxUDoovGo7xB3RQByxTXo15fGX0DIeTMxOWkVovnB4FC35iJN6ArGLOlBRI9U4d4gJ7VOTOp-Ki47RIaViiIs12QGjxRmGs2cQzCFniRpBE0GyNLW3s_03rvTcpPeHAruMaUdrIKNX8jaFZ1TcBw/s3264/28063.png" 
+                     alt="Logo WriteHub" class="h-14 md:h-16 w-auto object-contain">
             </a>
-            <a href="https://wa.me/6288219673570" class="hidden md:flex items-center gap-2 bg-brand text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-brand-dark transition shadow-lg shadow-brand/20">
+            <a href="https://wa.me/6288219673570" class="hidden md:flex items-center gap-2 bg-brand text-white px-5 py-2 rounded-full text-sm font-bold hover:bg-brand-dark transition">
                 <i class="fa-brands fa-whatsapp"></i> Hubungi Admin
             </a>
         </div>
     </header>
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
     <section class="pt-32 pb-16 px-6 max-w-7xl mx-auto text-center">
-        <span class="inline-block py-1 px-3 rounded-full bg-brand/10 text-brand text-xs font-bold uppercase tracking-wider mb-4" data-aos="fade-down">Career Solution</span>
         <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6" data-aos="fade-up">
-            Pilih Paket CV <span class="text-brand relative inline-block">Terbaikmu<svg class="absolute w-full h-3 -bottom-1 left-0 text-yellow-400 -z-10" viewBox="0 0 200 9" fill="none"><path d="M2.00025 6.50003C6.00022 3.50002 45.5002 3.50002 98.0002 3.50002C150.5 3.50002 190 3.50002 194 6.50003" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+            Pilih Paket CV <span class="text-brand">Terbaikmu</span>
         </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8" data-aos="fade-up" data-aos-delay="100">
-            Tingkatkan peluang interview Anda dengan CV profesional. Klik tombol pesan untuk langsung terhubung ke WhatsApp Admin.
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+            Tingkatkan peluang interview Anda dengan CV profesional.
         </p>
     </section>
 
-    <!-- CATALOG SECTION -->
-    <section id="catalog" class="pb-24 px-6">
+    <!-- CATALOG -->
+    <section class="pb-24 px-6">
         <div class="max-w-7xl mx-auto">
-            
-            <!-- Filter Tabs -->
+            <!-- Filter -->
             <div class="flex flex-wrap justify-center gap-2 mb-12" data-aos="fade-up">
-                <button onclick="filterProducts('all')" class="filter-btn active px-6 py-2 rounded-full border border-brand bg-brand text-white font-medium transition hover:shadow-lg text-sm" data-filter="all">Semua Paket</button>
-                <button onclick="filterProducts('fresher')" class="filter-btn px-6 py-2 rounded-full border border-gray-200 bg-white text-gray-600 font-medium hover:border-brand hover:text-brand transition text-sm" data-filter="fresher">Fresh Graduate</button>
-                <button onclick="filterProducts('experienced')" class="filter-btn px-6 py-2 rounded-full border border-gray-200 bg-white text-gray-600 font-medium hover:border-brand hover:text-brand transition text-sm" data-filter="experienced">Profesional</button>
-                <button onclick="filterProducts('package')" class="filter-btn px-6 py-2 rounded-full border border-gray-200 bg-white text-gray-600 font-medium hover:border-brand hover:text-brand transition text-sm" data-filter="package">Paket Hemat</button>
+                <button onclick="filterProducts('all')" class="filter-btn active px-6 py-2 rounded-full border border-brand bg-brand text-white font-medium" data-filter="all">Semua Paket</button>
+                <button onclick="filterProducts('fresher')" class="filter-btn px-6 py-2 rounded-full border border-gray-200 bg-white text-gray-600 hover:border-brand hover:text-brand" data-filter="fresher">Fresh Graduate</button>
+                <button onclick="filterProducts('experienced')" class="filter-btn px-6 py-2 rounded-full border border-gray-200 bg-white text-gray-600 hover:border-brand hover:text-brand" data-filter="experienced">Profesional</button>
+                <button onclick="filterProducts('package')" class="filter-btn px-6 py-2 rounded-full border border-gray-200 bg-white text-gray-600 hover:border-brand hover:text-brand" data-filter="package">Paket Hemat</button>
             </div>
 
-            <!-- Database Status -->
-            <div id="db-status" class="text-center mb-8">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-gray-200 text-gray-500">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> <span>Memuat Katalog...</span>
-                </span>
-            </div>
-
-            <!-- Loading Spinner -->
-            <div id="loading-spinner" class="py-20 flex justify-center">
-                <div class="loader"></div>
-            </div>
-
-            <!-- Product Grid -->
-            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Products will be injected here by JS -->
-            </div>
+            <div id="status" class="text-center mb-6"></div>
+            <div id="loading" class="py-20 flex justify-center"><div class="loader"></div></div>
+            
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </div>
     </section>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/6288219673570" target="_blank" class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl hover:bg-green-600 transition hover:scale-110 z-[9999] cursor-pointer animate-bounce">
+    <!-- Floating WA -->
+    <a href="https://wa.me/6288219673570" target="_blank" 
+       class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-3xl hover:bg-green-600 z-[9999] animate-bounce">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- Scripts -->
     <script>
-        // ==========================================
-        // 1. KONFIGURASI (UBAH DI SINI)
-        // ==========================================
-        
-        // Ganti dengan URL dan Key Supabase Anda
-        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc'; 
-        const ADMIN_WA = '6288219673570'; 
+        // ================== KONFIGURASI ==================
+        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';   // ← GANTI INI
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';             // ← GANTI INI
+        const ADMIN_WA = '6288219673570';
 
-        // ==========================================
-        // 2. DATA CONTOH (FALLBACK)
-        // ==========================================
-        const dummyProducts = [
-            {
-                id: 1,
-                name: "CV Fresh Graduate",
-                category: "fresher", // Sesuai tombol filter
-                price: "Rp 99.000",
-                description: "Desain bersih dan ATS Friendly. Fokus pada pendidikan dan organisasi kampus.",
-                image_url: "https://images.unsplash.com/photo-1586281380349-632531db7ed4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                tag: "Best Seller"
-            },
-            {
-                id: 2,
-                name: "CV Professional",
-                category: "experienced",
-                price: "Rp 199.000",
-                description: "Highlight pengalaman kerja dengan copywriting persuasif. Cocok untuk 1-5 tahun pengalaman.",
-                image_url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                tag: "Premium"
-            },
-            {
-                id: 3,
-                name: "CV Executive Level",
-                category: "experienced",
-                price: "Rp 350.000",
-                description: "Untuk Manager & Director. Fokus pada pencapaian (achievements) dan leadership.",
-                image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                tag: "Exclusive"
-            },
-            {
-                id: 4,
-                name: "Paket CV + LinkedIn",
-                category: "package",
-                price: "Rp 299.000",
-                description: "Buat CV baru sekaligus optimasi profil LinkedIn agar mudah ditemukan Headhunter.",
-                image_url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                tag: "Hemat"
-            }
-        ];
+        let supabaseClient = null;
+        let allProducts = [];
 
-        // ==========================================
-        // 3. SUPABASE INIT & LOGIC
-        // ==========================================
-        let supabase = null;
-        let isLive = false;
-        let allProducts = []; // Menyimpan semua data untuk filter
-
+        // ================== INIT SUPABASE ==================
         function initSupabase() {
-            if (SUPABASE_URL && SUPABASE_KEY && !SUPABASE_URL.includes('xyz')) {
-                try {
-                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                    isLive = true;
-                    updateStatus('Terhubung Database', 'bg-green-100 text-green-700', 'fa-check-circle');
-                } catch (e) {
-                    console.error("Supabase Init Error:", e);
-                    updateStatus('Mode Demo (Offline)', 'bg-yellow-100 text-yellow-700', 'fa-database');
-                    loadDummyData();
-                }
-            } else {
-                updateStatus('Mode Demo (Offline)', 'bg-yellow-100 text-yellow-700', 'fa-database');
+            if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('MASUKKAN')) {
+                showStatus('Mode Demo (Database belum terhubung)', 'yellow');
+                loadDummyData();
+                return;
+            }
+
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                showStatus('Terhubung ke Database', 'green');
+                fetchProducts();
+            } catch (err) {
+                console.error(err);
+                showStatus('Gagal menginisialisasi Supabase', 'red');
                 loadDummyData();
             }
         }
 
+        // ================== FETCH DATA ==================
         async function fetchProducts() {
-            const loader = document.getElementById('loading-spinner');
-            const statusEl = document.getElementById('db-status');
+            const loading = document.getElementById('loading');
+            loading.style.display = 'flex';
 
-            if (isLive) {
-                const { data, error } = await supabase
-                    .from('products') 
-                    .select('*');
-                
-                loader.style.display = 'none';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .order('id', { ascending: true });
 
-                if (error) {
-                    console.error('Error fetching:', error);
-                    updateStatus('Gagal Load (Coba Lagi)', 'bg-red-100 text-red-700', 'fa-triangle-exclamation');
-                    loadDummyData();
+                loading.style.display = 'none';
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    allProducts = data;
+                    renderProducts(data);
+                    showStatus(`Berhasil memuat ${data.length} produk`, 'green');
                 } else {
-                    if (data && data.length > 0) {
-                        allProducts = data;
-                        renderProducts(allProducts);
-                    } else {
-                        loadDummyData();
-                    }
+                    showStatus('Tidak ada produk di database', 'yellow');
+                    loadDummyData();
                 }
-            } else {
-                // Jika mode demo, tunggu sedikit biar terasa loadingnya
-                setTimeout(() => {
-                    loader.style.display = 'none';
-                }, 500);
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                showStatus('Gagal mengambil data dari database', 'red');
+                loadDummyData();
             }
         }
 
+        // ================== DUMMY DATA (Fallback) ==================
         function loadDummyData() {
-            allProducts = dummyProducts;
-            document.getElementById('loading-spinner').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+            allProducts = [
+                { id: 1, name: "CV Fresh Graduate", category: "fresher", price: "Rp 99.000", description: "Desain bersih dan ATS Friendly.", image_url: "https://images.unsplash.com/photo-1586281380349-632531db7ed4", tag: "Best Seller" },
+                { id: 2, name: "CV Professional", category: "experienced", price: "Rp 199.000", description: "Untuk 1-5 tahun pengalaman kerja.", image_url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113", tag: "Premium" },
+                { id: 3, name: "CV Executive", category: "experienced", price: "Rp 350.000", description: "Level Manager & Director.", image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978", tag: "Exclusive" },
+                { id: 4, name: "Paket CV + LinkedIn", category: "package", price: "Rp 299.000", description: "CV + Optimasi LinkedIn.", image_url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3", tag: "Hemat" }
+            ];
             renderProducts(allProducts);
         }
 
-        // ==========================================
-        // 4. RENDER & FILTER FUNCTIONS
-        // ==========================================
-        function updateStatus(text, colorClasses, icon) {
-            const statusEl = document.getElementById('db-status');
-            statusEl.innerHTML = `
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold ${colorClasses}">
-                    <i class="fa-solid ${icon}"></i> <span>${text}</span>
-                </span>
-            `;
-        }
-
+        // ================== RENDER ==================
         function renderProducts(products) {
             const grid = document.getElementById('product-grid');
             grid.innerHTML = '';
 
             if (products.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center text-gray-500 py-10">Produk tidak ditemukan.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-500">Tidak ada produk ditemukan.</div>`;
                 return;
             }
 
-            products.forEach((product, index) => {
-                // Generate Link WA Otomatis
-                const message = `Halo Admin, saya tertarik memesan *${product.name}* seharga ${product.price}. Apakah tersedia?`;
-                const waLink = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(message)}`;
-                
-                // Mapping data (handle beda nama kolom antara dummy & supabase)
-                const name = product.name || "Paket CV";
-                const desc = product.description || "Layanan profesional.";
-                const img = product.image_url || product.image || "https://via.placeholder.com/400";
-                const price = product.price || "Hubungi Kami";
-                const tag = product.tag || product.category || "Service";
+            products.forEach((p, i) => {
+                const waMessage = `Halo Admin, saya tertarik dengan *${p.name}* seharga ${p.price}.`;
+                const waLink = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(waMessage)}`;
 
-                const cardHTML = `
-                    <div class="tilt-card bg-white rounded-2xl shadow-sm hover:shadow-2xl border border-gray-100 overflow-hidden transition-all duration-300 flex flex-col h-full group" data-aos="fade-up" data-aos-delay="${index * 100}">
+                const card = `
+                    <div class="tilt-card bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 flex flex-col h-full" data-aos="fade-up" data-aos-delay="${i*80}">
                         <div class="relative h-56 overflow-hidden">
-                            <img src="${img}" alt="${name}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
-                            <div class="absolute top-4 right-4 bg-brand text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                ${tag}
-                            </div>
+                            <img src="${p.image_url || p.image || 'https://via.placeholder.com/600'}" 
+                                 alt="${p.name}" 
+                                 class="w-full h-full object-cover transition-transform duration-700 hover:scale-110">
+                            ${p.tag ? `<div class="absolute top-4 right-4 bg-brand text-white text-xs font-bold px-3 py-1 rounded-full">${p.tag}</div>` : ''}
                         </div>
                         <div class="p-6 flex-1 flex flex-col">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">${name}</h3>
-                            <div class="text-brand font-bold text-lg mb-3">${price}</div>
-                            <p class="text-gray-600 text-sm mb-6 flex-1 leading-relaxed">${desc}</p>
+                            <h3 class="text-xl font-bold mb-1">${p.name}</h3>
+                            <div class="text-brand font-bold text-2xl mb-4">${p.price}</div>
+                            <p class="text-gray-600 text-sm flex-1">${p.description || p.desc || '-'}</p>
                             
-                            <a href="${waLink}" target="_blank" class="mt-auto w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-green-500/30 flex items-center justify-center gap-2 group/btn">
-                                <i class="fa-brands fa-whatsapp text-xl"></i> 
-                                <span>Pesan Sekarang</span>
-                                <i class="fa-solid fa-arrow-right group-hover/btn:translate-x-1 transition-transform text-sm"></i>
+                            <a href="${waLink}" target="_blank" 
+                               class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition">
+                                <i class="fa-brands fa-whatsapp"></i>
+                                Pesan via WhatsApp
                             </a>
                         </div>
                     </div>
                 `;
-                grid.innerHTML += cardHTML;
+                grid.innerHTML += card;
             });
 
-            initTiltEffect();
+            initTilt();
         }
 
-        // Filter Function
+        function initTilt() {
+            document.querySelectorAll('.tilt-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width;
+                    const y = (e.clientY - rect.top) / rect.height;
+                    card.style.transform = `perspective(1000px) rotateX(${(y-0.5)*-8}deg) rotateY(${(x-0.5)*8}deg)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            });
+        }
+
+        function showStatus(text, type = 'gray') {
+            const status = document.getElementById('status');
+            let color = 'bg-gray-100 text-gray-600';
+            if (type === 'green') color = 'bg-green-100 text-green-700';
+            if (type === 'yellow') color = 'bg-yellow-100 text-yellow-700';
+            if (type === 'red') color = 'bg-red-100 text-red-700';
+
+            status.innerHTML = `<span class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${color}">${text}</span>`;
+        }
+
         function filterProducts(category) {
-            // Update Tombol
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                if(btn.dataset.filter === category) {
-                    btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                if (btn.dataset.filter === category) {
                     btn.classList.add('bg-brand', 'text-white', 'border-brand');
+                    btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
                 } else {
-                    btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
                     btn.classList.remove('bg-brand', 'text-white', 'border-brand');
+                    btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
                 }
             });
 
-            // Filter Data
             if (category === 'all') {
                 renderProducts(allProducts);
             } else {
-                const filtered = allProducts.filter(p => (p.category === category));
+                const filtered = allProducts.filter(p => p.category === category);
                 renderProducts(filtered);
             }
         }
 
-        // ==========================================
-        // 5. INTERACTIONS
-        // ==========================================
-        
-        function initTiltEffect() {
-            const tiltCards = document.querySelectorAll('.tilt-card');
-            tiltCards.forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    const rotateX = ((y - centerY) / centerY) * -5;
-                    const rotateY = ((x - centerX) / centerX) * 5;
-                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
-                });
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale(1)`;
-                });
-            });
-        }
-
-        // Initialize
+        // ================== START ==================
         document.addEventListener('DOMContentLoaded', () => {
-            AOS.init({ duration: 800, once: true, offset: 50 });
+            AOS.init({ duration: 800, once: true });
             initSupabase();
-            fetchProducts();
         });
-
     </script>
 </body>
 </html>
