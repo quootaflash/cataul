@@ -3,407 +3,411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV Market - Jual Template CV Profesional</title>
+    <title>CV Market - Template Profesional</title>
     
-    <!-- Menggunakan Font Google: Poppins untuk tampilan modern -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Google: Plus Jakarta Sans (Lebih modern dan clean dari Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Ikon dari FontAwesome (CDN) -->
+    <!-- Ikon FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- CSS VARIABLES & RESET --- */
+        /* --- CSS VARIABLES (Tema Clean & Professional) --- */
         :root {
-            --primary: #2563eb;       /* Biru Utama */
-            --primary-dark: #1e40af;
-            --secondary: #0f172a;     /* Warna Gelap/Teks */
-            --accent: #f59e0b;        /* Kuning Aksen */
-            --bg-light: #f8fafc;
-            --white: #ffffff;
-            --gray: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --transition: all 0.3s ease;
+            /* Warna Utama: Biru Laut yang Tenang */
+            --primary: #0066cc; 
+            --primary-light: #e6f0fa;
+            --primary-dark: #004c99;
+            
+            /* Warna Teks & Background */
+            --text-main: #1e293b;    /* Slate 800 */
+            --text-sub: #64748b;     /* Slate 500 */
+            --bg-body: #f8fafc;      /* Slate 50 */
+            --bg-card: #ffffff;
+            
+            /* Aksen */
+            --border: #e2e8f0;       /* Slate 200 */
+            --success: #10b981;      /* Emerald */
+            
+            /* Efek */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(0,0,0,0.08);
+            --radius: 12px;          /* Sudut lebih bulat (Modern) */
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
         body {
-            background-color: var(--bg-light);
-            color: var(--secondary);
-            overflow-x: hidden;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
         }
 
-        a { text-decoration: none; color: inherit; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
         ul { list-style: none; }
-        img { max-width: 100%; display: block; }
+        img { display: block; max-width: 100%; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+        input, select { font-family: inherit; }
 
-        /* --- HEADER & NAVIGATION --- */
-        header {
-            background: var(--white);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 0.8rem 0;
-        }
-
+        /* --- LAYOUT UTILITIES --- */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 16px 0;
         }
 
         .nav-wrapper {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            gap: 30px;
         }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 1.5rem;
             font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-main);
+        }
+        
+        .logo svg {
+            width: 32px;
+            height: 32px;
             color: var(--primary);
         }
 
-        .logo img {
-            height: 40px; /* Ukuran Logo PNG */
-            width: auto;
-        }
-
-        .search-bar-header {
-            display: none; /* Hidden on mobile initially */
+        /* Search Bar yang Clean */
+        .search-container {
             flex: 1;
-            max-width: 400px;
-            margin: 0 20px;
+            max-width: 500px;
             position: relative;
         }
 
-        .search-bar-header input {
+        .search-input {
             width: 100%;
-            padding: 10px 40px 10px 15px;
-            border-radius: 50px;
+            padding: 12px 20px 12px 45px;
+            border-radius: 50px; /* Pill shape */
             border: 1px solid var(--border);
-            background: var(--bg-light);
-            outline: none;
+            background: var(--bg-body);
+            font-size: 0.95rem;
+            color: var(--text-main);
             transition: var(--transition);
         }
 
-        .search-bar-header input:focus {
+        .search-input:focus {
+            outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: var(--bg-card);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
 
-        .search-bar-header i {
+        .search-icon {
             position: absolute;
-            right: 15px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--gray);
+            color: var(--text-sub);
+            pointer-events: none;
         }
 
-        @media (min-width: 768px) {
-            .search-bar-header { display: block; }
-        }
-
-        /* --- HERO SLIDER --- */
-        .hero-section {
-            position: relative;
-            height: 500px;
-            overflow: hidden;
-            background: #000;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
+        .nav-links {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
+            gap: 24px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-sub);
         }
+        
+        .nav-links a:hover { color: var(--primary); }
 
-        .slide.active {
-            opacity: 1;
-        }
-
-        .slide::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5); /* Overlay gelap */
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
+        /* --- HERO SECTION --- */
+        .hero {
+            margin-top: 40px;
             text-align: center;
-            color: var(--white);
-            max-width: 800px;
-            padding: 20px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: var(--radius);
+            margin-bottom: 50px;
         }
 
-        .hero-content h1 {
+        .hero h1 {
             font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            color: var(--text-main);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
         }
 
-        .hero-content p {
+        .hero p {
+            color: var(--text-sub);
+            max-width: 600px;
+            margin: 0 auto 30px;
             font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
         }
 
-        .btn-cta {
+        .btn-primary {
             background-color: var(--primary);
-            color: var(--white);
-            padding: 12px 30px;
+            color: white;
+            padding: 12px 28px;
             border-radius: 50px;
             font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(0, 102, 204, 0.3);
             transition: var(--transition);
-            display: inline-block;
         }
 
-        .btn-cta:hover {
+        .btn-primary:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
+            box-shadow: 0 6px 10px -1px rgba(0, 102, 204, 0.4);
         }
 
-        /* --- FILTERS & MAIN CONTENT --- */
-        .marketplace-section {
-            padding: 40px 0;
-        }
-
-        .filters-container {
-            background: var(--white);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
+        /* --- FILTERS --- */
+        .controls-wrapper {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 16px;
+            margin-bottom: 40px;
             align-items: center;
-            justify-content: space-between;
         }
 
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--gray);
-        }
-
-        .filter-control {
-            padding: 10px;
+        .filter-select, .filter-input {
+            padding: 10px 16px;
             border: 1px solid var(--border);
             border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-main);
             outline: none;
-            width: 100%;
+            transition: var(--transition);
+            font-size: 0.9rem;
         }
 
-        .price-inputs {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .filter-select:focus, .filter-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-light);
         }
 
-        /* --- PRODUCT GRID --- */
+        /* --- PRODUCT GRID (Clean Layout) --- */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            /* Responsive Grid yang lebih lega */
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 32px; /* Jarak antar kartu lebih luas agar clean */
+            margin-bottom: 80px;
         }
 
         .cv-card {
-            background: var(--white);
-            border-radius: 12px;
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: var(--shadow);
             transition: var(--transition);
-            border: 1px solid transparent;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .cv-card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
         }
 
-        .card-image {
-            height: 200px;
-            background-color: #e2e8f0;
+        /* Area Gambar */
+        .card-image-wrapper {
             position: relative;
+            padding-top: 75%; /* Aspect Ratio 4:3 yang lebih proporsional */
+            background: #f1f5f9;
             overflow: hidden;
+            cursor: pointer;
         }
 
-        .card-image img {
-            width: 100%;
-            height: 100%;
+        .card-image-wrapper img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
         }
 
-        .cv-card:hover .card-image img {
+        .cv-card:hover .card-image-wrapper img {
             transform: scale(1.05);
         }
 
-        .card-badge {
+        /* Overlay Tombol (Muncul saat Hover) */
+        .card-overlay {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--accent);
-            color: var(--secondary);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .card-body {
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
             padding: 20px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .category-tag {
-            font-size: 0.75rem;
-            color: var(--primary);
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .cv-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--secondary);
-        }
-
-        .cv-price {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--secondary);
-            margin-top: auto;
-            margin-bottom: 15px;
-        }
-
-        .btn-buy {
-            width: 100%;
-            padding: 10px;
-            background-color: #25D366; /* Warna WhatsApp */
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            opacity: 0;
+            transform: translateY(10px);
             transition: var(--transition);
-        }
-
-        .btn-buy:hover {
-            background-color: #128C7E;
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            background: var(--secondary);
-            color: var(--white);
-            padding: 40px 0 20px;
-            margin-top: 50px;
-        }
-
-        .footer-content {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            gap: 30px;
-            margin-bottom: 30px;
+            justify-content: center;
         }
 
-        .footer-section h3 {
-            margin-bottom: 15px;
-            color: var(--primary);
-        }
-
-        .footer-section ul li {
-            margin-bottom: 8px;
-        }
-
-        .footer-section ul li a {
-            color: #94a3b8;
-            transition: color 0.3s;
-        }
-
-        .footer-section ul li a:hover {
-            color: var(--white);
-        }
-
-        .copyright {
-            text-align: center;
-            border-top: 1px solid #334155;
-            padding-top: 20px;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        /* --- TOAST NOTIFICATION --- */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--secondary);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            transform: translateY(150%);
-            transition: transform 0.3s ease;
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .toast.show {
+        .cv-card:hover .card-overlay {
+            opacity: 1;
             transform: translateY(0);
         }
 
-        /* --- RESPONSIVE MOBILE --- */
+        .btn-card-action {
+            background: white;
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-card-action:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Area Konten Kartu */
+        .card-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-category {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            line-height: 1.4;
+            /* Truncate teks */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.8rem;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .card-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .card-rating {
+            font-size: 0.8rem;
+            color: #fbbf24; /* Amber 400 */
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .rating-count {
+            color: var(--text-sub);
+            font-size: 0.75rem;
+        }
+
+        /* --- FOOTER MINIMALIS --- */
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 60px 0 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h3 { font-size: 1.2rem; margin-bottom: 12px; color: var(--text-main); }
+        .footer-brand p { color: var(--text-sub); font-size: 0.9rem; max-width: 300px; }
+        
+        .footer-col h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--text-sub); font-size: 0.9rem; }
+        .footer-col ul li a:hover { color: var(--primary); }
+
+        .copyright {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* --- TOAST --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-main);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: var(--shadow-hover);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+        }
+        
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 768px) {
-            .hero-content h1 { font-size: 1.8rem; }
-            .filters-container { flex-direction: column; align-items: stretch; }
-            .nav-wrapper { flex-direction: column; gap: 15px; }
-            .search-bar-header { display: flex; margin: 0; max-width: 100%; }
+            .nav-wrapper { flex-direction: column; gap: 16px; }
+            .nav-links { display: none; } /* Hide menu on mobile for simplicity */
+            .hero h1 { font-size: 1.8rem; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .card-title { font-size: 0.9rem; height: 2.5rem; }
+            .card-image-wrapper { padding-top: 100%; /* Square on mobile */ }
         }
     </style>
 </head>
@@ -413,333 +417,271 @@
     <header>
         <div class="container nav-wrapper">
             <a href="#" class="logo">
-                <!-- Placeholder Logo PNG -->
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhrjJBVDkWQwHQ6lmGBp9bTqPiZELN5EeRGArwgezZeV-fADzgXtdQHqurDsyZyzD2NNJm0WRNQFxf-EfnK_sgDZS9r_FwpoYGodnUKKBUg6kbdUxGFJ74oAbPuoH4vPLYCQfUnDJ-G4ACLJLyrAUnFTE-yE46BmWT-kkd2VAWh94PyUUVTsMQJFyhNxxgi/s3264/28011.png" alt="Logo CV Market">
+                <!-- SVG Icon: Clean Document -->
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
                 <span>CV Market</span>
             </a>
             
-            <div class="search-bar-header">
-                <input type="text" id="headerSearch" placeholder="Cari template CV...">
-                <i class="fas fa-search"></i>
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="headerSearch" class="search-input" placeholder="Cari template CV...">
             </div>
+
+            <nav class="nav-links">
+                <a href="#">Beranda</a>
+                <a href="#">Koleksi</a>
+                <a href="#">Tentang</a>
+                <a href="#">Kontak</a>
+            </nav>
         </div>
     </header>
 
-    <!-- Hero Slider -->
-    <section class="hero-section">
-        <!-- Slide 1 -->
-        <div class="slide active" style="background-image: url('https://picsum.photos/seed/office1/1200/500');">
-            <div class="hero-content">
-                <h1>Langganan Karir Impianmu</h1>
-                <p>Koleksi template CV profesional yang dirancang untuk lolos ATS (Applicant Tracking System).</p>
-                <a href="#marketplace" class="btn-cta">Lihat Koleksi</a>
-            </div>
-        </div>
-        <!-- Slide 2 -->
-        <div class="slide" style="background-image: url('https://picsum.photos/seed/work2/1200/500');">
-            <div class="hero-content">
-                <h1>Desain Elegan & Modern</h1>
-                <p>Tampil beda di mata rekruter dengan desain CV yang bersih dan terstruktur.</p>
-                <a href="#marketplace" class="btn-cta">Beli Sekarang</a>
-            </div>
-        </div>
-        <!-- Slide 3 -->
-        <div class="slide" style="background-image: url('https://picsum.photos/seed/tech3/1200/500');">
-            <div class="hero-content">
-                <h1>Solusi Cepat & Mudah</h1>
-                <p>Download, edit di Word/Canva, dan siap kirim dalam hitungan menit.</p>
-                <a href="#marketplace" class="btn-cta">Mulai</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Marketplace Area -->
-    <main id="marketplace" class="container marketplace-section">
+    <main class="container">
         
-        <!-- Filters -->
-        <div class="filters-container">
-            <!-- Search -->
-            <div class="filter-group" style="flex: 2;">
-                <label for="searchInput">Cari Nama CV</label>
-                <input type="text" id="searchInput" class="filter-control" placeholder="Contoh: CV Creative, CV Fresh Graduate...">
-            </div>
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Tingkatkan Peluang Karirmu</h1>
+            <p>Temukan ratusan template CV profesional, bersih, dan modern yang dirancang untuk lolos sistem ATS.</p>
+            <button class="btn-primary" onclick="document.getElementById('marketplace').scrollIntoView({behavior: 'smooth'})">
+                Lihat Semua Template
+            </button>
+        </section>
 
-            <!-- Category Filter -->
-            <div class="filter-group">
-                <label for="categoryFilter">Kategori</label>
-                <select id="categoryFilter" class="filter-control">
+        <!-- Marketplace Section -->
+        <section id="marketplace">
+            <!-- Filter Controls -->
+            <div class="controls-wrapper">
+                <input type="text" id="searchFilter" class="filter-input" placeholder="Cari nama CV..." style="flex: 1;">
+                
+                <select id="categoryFilter" class="filter-select">
                     <option value="all">Semua Kategori</option>
-                    <option value="Creative">Creative Design</option>
-                    <option value="Formal">Formal / Korporat</option>
-                    <option value="Tech">IT & Tech</option>
+                    <option value="Creative">Creative</option>
+                    <option value="Formal">Formal</option>
+                    <option value="Tech">Tech</option>
                     <option value="Simple">Minimalis</option>
+                </select>
+
+                <select id="sortFilter" class="filter-select">
+                    <option value="default">Urutkan</option>
+                    <option value="price_asc">Harga Terendah</option>
+                    <option value="price_desc">Harga Tertinggi</option>
                 </select>
             </div>
 
-            <!-- Price Filter -->
-            <div class="filter-group">
-                <label>Range Harga (IDR)</label>
-                <div class="price-inputs">
-                    <input type="number" id="minPrice" class="filter-control" placeholder="Min">
-                    <span>-</span>
-                    <input type="number" id="maxPrice" class="filter-control" placeholder="Max">
-                </div>
+            <!-- Product Grid -->
+            <div class="product-grid" id="productGrid">
+                <!-- Javascript will populate this -->
             </div>
-        </div>
-
-        <!-- Product Grid -->
-        <div class="product-grid" id="productGrid">
-            <!-- Products will be injected here via JavaScript -->
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-                <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--primary);"></i>
-                <p style="margin-top: 10px;">Memuat data...</p>
-            </div>
-        </div>
+        </section>
 
     </main>
 
     <!-- Footer -->
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
+            <div class="footer-grid">
+                <div class="footer-brand">
                     <h3>CV Market</h3>
-                    <p>Platform marketplace template CV terpercaya di Indonesia untuk membantu karir Anda.</p>
+                    <p>Platform penyedia template CV berkualitas tinggi untuk profesional di seluruh Indonesia.</p>
                 </div>
-                <div class="footer-section">
-                    <h3>Kategori</h3>
+                <div class="footer-col">
+                    <h4>Produk</h4>
                     <ul>
-                        <li><a href="#">Creative Design</a></li>
-                        <li><a href="#">Formal</a></li>
-                        <li><a href="#">IT & Tech</a></li>
-                        <li><a href="#">Akuntansi</a></li>
+                        <li><a href="#">Semua Template</a></li>
+                        <li><a href="#">Terlaris</a></li>
+                        <li><a href="#">Baru Rilis</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h3>Bantuan</h3>
+                <div class="footer-col">
+                    <h4>Perusahaan</h4>
                     <ul>
-                        <li><a href="#">Cara Pembelian</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Kontak Admin</a></li>
+                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="#">Karir</a></li>
+                        <li><a href="#">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Sosial</h4>
+                    <ul>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Twitter</a></li>
                     </ul>
                 </div>
             </div>
             <div class="copyright">
-                &copy; 2023 CV Market. All rights reserved.
+                &copy; 2024 CV Market. All rights reserved.
             </div>
         </div>
     </footer>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div id="toast" class="toast">
-        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
-        <span>Mengarahkan ke WhatsApp...</span>
+        <i class="fas fa-check-circle" style="color: #4ade80;"></i>
+        <span id="toastMessage">Berhasil</span>
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script type="module">
-        // ==========================================
-        // KONFIGURASI SUPABASE
-        // ==========================================
-        // Ganti dengan URL dan Key Supabase project Anda sendiri
-        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co'; 
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc'; 
-        
-        // Nomor WhatsApp Admin (Format internasional tanpa +)
-        const ADMIN_WA = '6281234567890'; 
-
-        // Import Supabase Client dari CDN
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        let supabase;
-        let useSupabase = false; // Flag untuk switch mode
+        // --- KONFIGURASI ---
+        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
+        const ADMIN_WA = '6281234567890';
 
-        // Cek jika kredensial sudah diisi user, jika tidak gunakan dummy data
-        if (SUPABASE_URL !== 'https://xyzcompany.supabase.co' && SUPABASE_ANON_KEY.length > 50) {
-            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            useSupabase = true;
-            console.log("Mode: Supabase Connected");
-        } else {
-            console.log("Mode: Demo Data (Silakan isi konfigurasi Supabase)");
+        let supabase;
+        let useSupabase = false;
+
+        if (SUPABASE_URL.includes('neuylewfsxcuhayegygf') && SUPABASE_ANON_KEY.length > 50) {
+            try {
+                supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                useSupabase = true;
+            } catch (e) { console.error("Supabase Init Error", e); }
         }
 
-        // ==========================================
-        // DATA DUMMY (Untuk Demo jika belum ada DB)
-        // ==========================================
+        // --- DATA DUMMY (Dengan data rating lengkap untuk testing) ---
         const dummyData = [
-            { id: 1, title: "CV Creative Pro", category: "Creative", price: 50000, image: "https://picsum.photos/seed/cv1/300/400" },
-            { id: 2, title: "CV Corporate Blue", category: "Formal", price: 75000, image: "https://picsum.photos/seed/cv2/300/400" },
-            { id: 3, title: "Tech Developer Resume", category: "Tech", price: 100000, image: "https://picsum.photos/seed/cv3/300/400" },
-            { id: 4, title: "Minimalist Clean", category: "Simple", price: 45000, image: "https://picsum.photos/seed/cv4/300/400" },
-            { id: 5, title: "Bold Designer CV", category: "Creative", price: 60000, image: "https://picsum.photos/seed/cv5/300/400" },
-            { id: 6, title: "Manager Executive", category: "Formal", price: 120000, image: "https://picsum.photos/seed/cv6/300/400" },
-            { id: 7, title: "Frontend Dev Kit", category: "Tech", price: 90000, image: "https://picsum.photos/seed/cv7/300/400" },
-            { id: 8, title: "Fresh Graduate Pink", category: "Simple", price: 35000, image: "https://picsum.photos/seed/cv8/300/400" },
+            { id: 1, title: "Clean Resume - Professional Blue", category: "Formal", price: 50000, rating: 4.8, sold: 120, image: "https://picsum.photos/seed/clean1/400/300" },
+            { id: 2, title: "Creative Portfolio - Dark Mode", category: "Creative", price: 85000, rating: 4.9, sold: 45, image: "https://picsum.photos/seed/creat1/400/300" },
+            { id: 3, title: "Modern Minimalist - Simple", category: "Simple", price: 45000, rating: 4.5, sold: 300, image: "https://picsum.photos/seed/min1/400/300" },
+            { id: 4, title: "Tech Developer - Code Style", category: "Tech", price: 75000, rating: 5.0, sold: 89, image: "https://picsum.photos/seed/tech1/400/300" },
+            { id: 5, title: "Executive Manager - Gold", category: "Formal", price: 100000, rating: 4.7, sold: 20, image: "https://picsum.photos/seed/exec1/400/300" },
+            { id: 6, title: "Fresh Graduate - Pink Pastel", category: "Simple", price: 35000, rating: 4.6, sold: 150, image: "https://picsum.photos/seed/grad1/400/300" },
+            { id: 7, title: "UX Designer - Visual", category: "Creative", price: 90000, rating: 4.9, sold: 60, image: "https://picsum.photos/seed/ux1/400/300" },
+            { id: 8, title: "Data Analyst - Structured", category: "Tech", price: 65000, rating: 4.8, sold: 95, image: "https://picsum.photos/seed/data1/400/300" },
         ];
 
-        // State Aplikasi
         let products = [];
         let filteredProducts = [];
 
-        // ==========================================
-        // LOGIC: FETCH DATA
-        // ==========================================
-        async function fetchProducts() {
-            if (useSupabase) {
-                // Fetch dari Supabase
-                // Asumsi nama tabel adalah 'cvs'
-                const { data, error } = await supabase
-                    .from('cvs')
-                    .select('*');
-                
-                if (error) {
-                    console.error('Error fetching data:', error);
-                    showToast('Gagal memuat data database, menggunakan data lokal.', true);
-                    products = dummyData;
-                } else {
-                    products = data;
-                }
-            } else {
-                // Simulasi loading delay
-                await new Promise(r => setTimeout(r, 800));
-                products = dummyData;
-            }
-            
-            filteredProducts = [...products];
-            renderProducts();
+        // --- LOGIC UTAMA ---
+        async function init() {
+            await fetchData();
+            renderGrid();
+            setupEventListeners();
         }
 
-        // ==========================================
-        // LOGIC: RENDER PRODUCTS
-        // ==========================================
-        const grid = document.getElementById('productGrid');
+        async function fetchData() {
+            if (useSupabase) {
+                const { data, error } = await supabase.from('cvs').select('*');
+                if (data) products = data;
+                else {
+                    console.error("Supabase Error:", error);
+                    products = dummyData;
+                    showToast("Mode Demo: Menggunakan data lokal");
+                }
+            } else {
+                // Simulasi loading
+                await new Promise(r => setTimeout(r, 500));
+                products = dummyData;
+            }
+            filteredProducts = [...products];
+        }
 
-        function renderProducts() {
+        // --- RENDER GRID (BUG FIX: Null check) ---
+        function renderGrid() {
+            const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
 
             if (filteredProducts.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--gray);">
-                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                        <p>Tidak ada CV yang cocok dengan pencarian Anda.</p>
-                    </div>
-                `;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-sub);">Tidak ada template yang ditemukan.</div>`;
                 return;
             }
 
-            filteredProducts.forEach(product => {
+            filteredProducts.forEach(p => {
+                // Null safety check
+                const rating = p.rating || 0;
+                const sold = p.sold || 0;
+                const price = p.price || 0;
+
                 const card = document.createElement('div');
                 card.className = 'cv-card';
                 card.innerHTML = `
-                    <div class="card-image">
-                        <span class="card-badge">${product.category}</span>
-                        <img src="${product.image}" alt="${product.title}">
+                    <div class="card-image-wrapper" onclick="window.previewProduct(${p.id})">
+                        <img src="${p.image}" alt="${p.title}" loading="lazy">
+                        <div class="card-overlay">
+                            <button class="btn-card-action" onclick="event.stopPropagation(); window.buyViaWA('${p.title}', ${price})">
+                                <i class="fab fa-whatsapp"></i> Beli
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="category-tag">Template</div>
-                        <h3 class="cv-title">${product.title}</h3>
-                        <div class="cv-price">Rp ${product.price.toLocaleString('id-ID')}</div>
-                        <button class="btn-buy" onclick="buyViaWhatsApp('${product.title}', ${product.price})">
-                            <i class="fab fa-whatsapp"></i> Beli Sekarang
-                        </button>
+                    <div class="card-content" onclick="window.previewProduct(${p.id})">
+                        <div class="card-category">${p.category || 'Umum'}</div>
+                        <h3 class="card-title">${p.title}</h3>
+                        <div class="card-footer">
+                            <div class="card-price">Rp ${price.toLocaleString('id-ID')}</div>
+                            <div class="card-rating">
+                                <i class="fas fa-star"></i>
+                                <span>${rating.toFixed(1)}</span>
+                                <span class="rating-count">(${sold})</span>
+                            </div>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // ==========================================
-        // LOGIC: FILTERS
-        // ==========================================
-        const searchInput = document.getElementById('searchInput');
-        const categoryFilter = document.getElementById('categoryFilter');
-        const minPrice = document.getElementById('minPrice');
-        const maxPrice = document.getElementById('maxPrice');
+        // --- FILTERS & SORTING ---
+        function filterAndSort() {
+            const search = document.getElementById('searchFilter').value.toLowerCase();
+            const cat = document.getElementById('categoryFilter').value;
+            const sort = document.getElementById('sortFilter').value;
 
-        function filterProducts() {
-            const query = searchInput.value.toLowerCase();
-            const category = categoryFilter.value;
-            const min = minPrice.value ? parseInt(minPrice.value) : 0;
-            const max = maxPrice.value ? parseInt(maxPrice.value) : Infinity;
-
-            filteredProducts = products.filter(product => {
-                // Filter Text
-                const matchText = product.title.toLowerCase().includes(query);
-                // Filter Category
-                const matchCategory = category === 'all' || product.category === category;
-                // Filter Price
-                const matchPrice = product.price >= min && product.price <= max;
-
-                return matchText && matchCategory && matchPrice;
+            // 1. Filter
+            let temp = products.filter(p => {
+                const matchSearch = p.title.toLowerCase().includes(search);
+                const matchCat = cat === 'all' || p.category === cat;
+                return matchSearch && matchCat;
             });
 
-            renderProducts();
+            // 2. Sort
+            if (sort === 'price_asc') temp.sort((a, b) => a.price - b.price);
+            if (sort === 'price_desc') temp.sort((a, b) => b.price - a.price);
+
+            filteredProducts = temp;
+            renderGrid();
         }
 
-        // Event Listeners untuk Filter
-        searchInput.addEventListener('input', filterProducts);
-        categoryFilter.addEventListener('change', filterProducts);
-        minPrice.addEventListener('input', filterProducts);
-        maxPrice.addEventListener('input', filterProducts);
+        function setupEventListeners() {
+            // Inputs
+            ['searchFilter', 'categoryFilter', 'sortFilter'].forEach(id => {
+                document.getElementById(id).addEventListener('input', filterAndSort);
+            });
 
-        // Sinkronisasi search header dengan search filter
-        document.getElementById('headerSearch').addEventListener('input', (e) => {
-            searchInput.value = e.target.value;
-            filterProducts();
-        });
-
-        // ==========================================
-        // LOGIC: WHATSAPP REDIRECT
-        // ==========================================
-        window.buyViaWhatsApp = function(title, price) {
-            showToast("Membuka WhatsApp...");
-            
-            // Format Pesan
-            const message = `Halo Admin, saya tertarik membeli template CV:\n\n*Nama:* ${title}\n*Harga:* Rp ${price.toLocaleString('id-ID')}\n\nMohon info pembayarannya. Terima kasih.`;
-            
-            // Encode URL
-            const url = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(message)}`;
-            
-            // Delay sedikit agar toast terlihat
-            setTimeout(() => {
-                window.open(url, '_blank');
-            }, 1000);
+            // Header Search Sync
+            document.getElementById('headerSearch').addEventListener('input', (e) => {
+                document.getElementById('searchFilter').value = e.target.value;
+                filterAndSort();
+            });
         }
 
-        // ==========================================
-        // LOGIC: TOAST NOTIFICATION
-        // ==========================================
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.innerHTML = `<i class="${isError ? 'fas fa-exclamation-circle' : 'fab fa-whatsapp'}"></i> <span>${msg}</span>`;
-            toast.style.background = isError ? '#ef4444' : '#0f172a';
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        // --- GLOBAL FUNCTIONS (Window) ---
+        window.buyViaWA = function(title, price) {
+            const msg = `Halo Admin, saya ingin membeli template CV: *${title}* seharga Rp ${price.toLocaleString('id-ID')}`;
+            const url = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`;
+            showToast("Mengalihkan ke WhatsApp...");
+            setTimeout(() => window.open(url, '_blank'), 800);
         }
 
-        // ==========================================
-        // LOGIC: HERO SLIDER
-        // ==========================================
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        
-        function nextSlide() {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
+        window.previewProduct = function(id) {
+            // Fungsi placeholder untuk preview (bisa dikembangkan menjadi modal)
+            showToast("Membuka detail produk...");
+            console.log("Preview ID:", id);
         }
 
-        // Ganti slide setiap 5 detik
-        setInterval(nextSlide, 5000);
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
 
-        // ==========================================
-        // INIT
-        // ==========================================
-        // Eksekusi fetch produk saat halaman dimuat
-        fetchProducts();
-
+        // Start
+        init();
     </script>
 </body>
 </html>
