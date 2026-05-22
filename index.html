@@ -475,7 +475,7 @@
         const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
         
-        // Nomor admin default (fallback jika database gagal)
+        // Nomor admin default (fallback)
         const DEFAULT_ADMIN_WA = '6285885850204';
 
         let supabase;
@@ -495,19 +495,28 @@
             { image: 'https://picsum.photos/seed/modern3/1200/500', link: '#' }
         ];
 
-        // --- DATA DUMMY ---
+        // --- DATA DUMMY (Standar Inggris) ---
         const dummyData = [
-            { id: 1, title: "Modern Creative Portfolio", category: "Creative", price: 50000, original_price: 75000, sold_count: 120, description: "Template dengan layout asimetris yang modern, cocok untuk industri kreatif.", image: "https://picsum.photos/seed/clean1/600/600" },
-            { id: 2, title: "Executive Formal Blue", category: "Formal", price: 75000, original_price: null, sold_count: 85, description: "Struktur profesional untuk level manajerial dengan warna biru tenang.", image: "https://picsum.photos/seed/clean2/600/600" },
-            { id: 3, title: "Developer Dark Mode", category: "Tech", price: 90000, original_price: 120000, sold_count: 200, description: "Tema gelap elegan untuk programmer, menyorot skill teknis.", image: "https://picsum.photos/seed/clean3/600/600" },
-            { id: 4, title: "Clean Minimalist", category: "Simple", price: 35000, original_price: null, sold_count: 500, description: "Fokus pada konten tanpa gangguan visual. Terbaik untuk fresh graduate.", image: "https://picsum.photos/seed/clean4/600/600" },
-            { id: 5, title: "Bold Marketing Kit", category: "Creative", price: 60000, original_price: 80000, sold_count: 45, description: "Desain berani untuk menarik perhatian HRD di bidang marketing.", image: "https://picsum.photos/seed/clean5/600/600" },
-            { id: 6, title: "Finance Structure", category: "Formal", price: 80000, original_price: null, sold_count: 60, description: "Rapi, terstruktur, dan menonjolkan kuantifikasi prestasi.", image: "https://picsum.photos/seed/clean6/600/600" }
+            { id: 1, title: "Modern Creative Portfolio", category: "Creative", price: 50000, original_price: 75000, sold_count: 120, description: "Template dengan layout asimetris yang modern.", image: "https://picsum.photos/seed/clean1/600/600" },
+            { id: 2, title: "Executive Formal Blue", category: "Formal", price: 75000, original_price: null, sold_count: 85, description: "Struktur profesional untuk level manajerial.", image: "https://picsum.photos/seed/clean2/600/600" },
+            { id: 3, title: "Developer Dark Mode", category: "Tech", price: 90000, original_price: 120000, sold_count: 200, description: "Tema gelap elegan untuk programmer.", image: "https://picsum.photos/seed/clean3/600/600" },
+            { id: 4, title: "Clean Minimalist", category: "Simple", price: 35000, original_price: null, sold_count: 500, description: "Fokus pada konten tanpa gangguan visual.", image: "https://picsum.photos/seed/clean4/600/600" }
         ];
 
         let products = [];
         let filteredProducts = [];
         let currentCategory = 'all';
+        
+        // Mapping Field (Otomatis disesuaikan nanti)
+        let fields = {
+            title: 'title',
+            price: 'price',
+            original_price: 'original_price',
+            image: 'image',
+            category: 'category',
+            description: 'description',
+            sold_count: 'sold_count'
+        };
 
         // Variabel untuk menyimpan daftar nomor admin dari database
         let adminNumbersList = [];
@@ -517,23 +526,38 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
         }
 
-        // --- FUNGSI AMBIL NOMOR ADMIN (DARI DATABASE) ---
+        // --- FUNGSI AUTO MAP COLUMNS ---
+        function autoMapColumns(sampleData) {
+            if (!sampleData) return;
+            const keys = Object.keys(sampleData);
+            
+            // Mapping manual untuk kemungkinan nama kolom umum di DB Indonesia
+            const map = {
+                title: keys.find(k => k.toLowerCase().includes('nama') || k.toLowerCase().includes('title')) || 'title',
+                price: keys.find(k => k.toLowerCase().includes('harga') || k.toLowerCase().includes('price')) || 'price',
+                original_price: keys.find(k => k.toLowerCase().includes('original') || k.toLowerCase().includes('coret') || k.toLowerCase().includes('asli')) || 'original_price',
+                image: keys.find(k => k.toLowerCase().includes('gambar') || k.toLowerCase().includes('image') || k.toLowerCase().includes('url')) || 'image',
+                category: keys.find(k => k.toLowerCase().includes('kategori') || k.toLowerCase().includes('category')) || 'category',
+                description: keys.find(k => k.toLowerCase().includes('deskripsi') || k.toLowerCase().includes('desc')) || 'description',
+                sold_count: keys.find(k => k.toLowerCase().includes('terjual') || k.toLowerCase().includes('sold')) || 'sold_count'
+            };
+
+            console.log("Mapping Kolom Database:", map);
+            fields = map;
+        }
+
+        // --- FUNGSI AMBIL NOMOR ADMIN ---
         async function fetchAdminNumbers() {
             if (useSupabase) {
-                // Mengambil data dari tabel 'no_wa'
-                // Asumsi nama kolom nomor adalah 'nomor'. Jika beda, sesuaikan di sini.
                 const { data, error } = await supabase.from('no_wa').select('nomor');
-                
                 if (data && data.length > 0) {
-                    // Mapping data ke array string
                     adminNumbersList = data.map(item => item.nomor).filter(n => n);
                     console.log("Admin WA Numbers loaded:", adminNumbersList);
                 } else {
-                    console.warn("Gagal mengambil nomor WA atau tabel kosong, menggunakan default.");
+                    console.warn("Gagal mengambil nomor WA atau tabel kosong.");
                 }
             }
             
-            // Fallback: Jika array kosong (gagal DB atau tidak ada data), gunakan default
             if (adminNumbersList.length === 0) {
                 adminNumbersList = [DEFAULT_ADMIN_WA];
             }
@@ -541,25 +565,24 @@
 
         // --- FUNGSI ROTASI ADMIN ---
         function getRotatedAdminNumber() {
-            // Ambil index terakhir yang disimpan di browser (LocalStorage)
             let currentIndex = parseInt(localStorage.getItem('wa_admin_index') || '0');
-            
-            // Ambil nomor berdasarkan index saat ini
             const selectedNumber = adminNumbersList[currentIndex];
-            
-            // Hitung index berikutnya untuk rotasi (Round Robin)
             let nextIndex = (currentIndex + 1) % adminNumbersList.length;
-            
-            // Simpan index berikutnya ke LocalStorage
             localStorage.setItem('wa_admin_index', nextIndex.toString());
-            
             return selectedNumber;
+        }
+
+        // --- HELPER: AMBIL VALUE SECARA AMAN ---
+        function getField(item, fieldKey) {
+            const key = fields[fieldKey];
+            // Cek key mapping, jika tidak ada coba key default
+            return item[key] || item[fieldKey];
         }
 
         // --- INIT ---
         async function init() {
             initSlider();
-            await fetchAdminNumbers(); // 1. Ambil nomor admin dulu
+            await fetchAdminNumbers(); 
             await fetchProducts();
             await fetchAd();
             renderProducts();
@@ -612,9 +635,21 @@
         // --- DATA & FETCH ---
         async function fetchProducts() {
             if (useSupabase) {
-                const { data, error } = await supabase.from('cvs').select('*');
-                if (data) products = data;
-                else products = dummyData;
+                // Coba ambil satu data dulu untuk mapping kolom
+                const { data: sample, error: sampleErr } = await supabase.from('cvs').select('*').limit(1);
+                
+                if (!sampleErr && sample && sample.length > 0) {
+                    // Lakukan Auto-Map berdasarkan kolom yang terdeteksi
+                    autoMapColumns(sample[0]);
+                    
+                    // Ambil semua data setelah mapping diketahui
+                    const { data, error } = await supabase.from('cvs').select('*');
+                    if (data) products = data;
+                    else products = dummyData;
+                } else {
+                    console.warn("Gagal koneksi DB, menggunakan Dummy Data.");
+                    products = dummyData;
+                }
             } else {
                 await new Promise(r => setTimeout(r, 800));
                 products = dummyData;
@@ -647,28 +682,39 @@
                 card.className = 'cv-card';
                 card.onclick = () => openModal(p);
                 
+                // Menggunakan getField agar kompatibel DB/Dummy
+                const title = getField(p, 'title');
+                const price = getField(p, 'price');
+                const originalPrice = getField(p, 'original_price');
+                const category = getField(p, 'category');
+                const image = getField(p, 'image');
+                const soldCount = getField(p, 'sold_count');
+
                 let priceHTML = '';
-                if (p.original_price && p.original_price > p.price) {
+                if (originalPrice && Number(originalPrice) > Number(price)) {
                     priceHTML = `
-                        <div class="price-original">${formatRupiah(p.original_price)}</div>
-                        <div class="price-main">${formatRupiah(p.price)}</div>
+                        <div class="price-original">${formatRupiah(originalPrice)}</div>
+                        <div class="price-main">${formatRupiah(price)}</div>
                     `;
                 } else {
-                    priceHTML = `<div class="price-main">${formatRupiah(p.price)}</div>`;
+                    priceHTML = `<div class="price-main">${formatRupiah(price)}</div>`;
                 }
+
+                // Fallback image jika kosong
+                const displayImage = image || 'https://picsum.photos/seed/fallback/600/600';
 
                 card.innerHTML = `
                     <div class="card-image">
-                        <span class="badge">${p.category}</span>
-                        <img src="${p.image}" loading="lazy" alt="${p.title}">
+                        <span class="badge">${category || 'Produk'}</span>
+                        <img src="${displayImage}" loading="lazy" alt="${title}">
                     </div>
                     <div class="card-content">
-                        <h3 class="card-title">${p.title}</h3>
+                        <h3 class="card-title">${title || 'Tanpa Judul'}</h3>
                         <div class="card-footer">
                             <div class="price-container">
                                 ${priceHTML}
                             </div>
-                            <div class="sold-info">${p.sold_count || 0} Terpakai</div>
+                            <div class="sold-info">${soldCount || 0} Terpakai</div>
                         </div>
                     </div>
                 `;
@@ -688,8 +734,11 @@
             const q = document.getElementById('searchInput').value.toLowerCase();
             
             filteredProducts = products.filter(p => {
-                const matchCat = currentCategory === 'all' || p.category === currentCategory;
-                const matchText = p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+                const title = (getField(p, 'title') || '').toLowerCase();
+                const category = (getField(p, 'category') || '').toLowerCase();
+                
+                const matchCat = currentCategory === 'all' || category.includes(currentCategory.toLowerCase());
+                const matchText = title.includes(q) || category.includes(q);
                 return matchCat && matchText;
             });
             renderProducts();
@@ -699,32 +748,37 @@
 
         // --- MODAL ---
         window.openModal = function(p) {
-            document.getElementById('m-image').src = p.image;
-            document.getElementById('m-cat').innerText = p.category;
-            document.getElementById('m-title').innerText = p.title;
-            document.getElementById('m-desc').innerText = p.description || "";
-            document.getElementById('m-sold').innerText = p.sold_count || 0;
+            const title = getField(p, 'title');
+            const category = getField(p, 'category');
+            const price = getField(p, 'price');
+            const originalPrice = getField(p, 'original_price');
+            const description = getField(p, 'description');
+            const image = getField(p, 'image');
+            const soldCount = getField(p, 'sold_count');
+
+            document.getElementById('m-image').src = image || 'https://picsum.photos/seed/modal/800/600';
+            document.getElementById('m-cat').innerText = category || 'CATEGORY';
+            document.getElementById('m-title').innerText = title || 'Product Title';
+            document.getElementById('m-desc').innerText = description || "Deskripsi tidak tersedia.";
+            document.getElementById('m-sold').innerText = soldCount || 0;
             
             const priceWrap = document.getElementById('m-price-wrap');
-            if (p.original_price && p.original_price > p.price) {
+            if (originalPrice && Number(originalPrice) > Number(price)) {
                 priceWrap.innerHTML = `
-                    <div class="modal-price-original">${formatRupiah(p.original_price)}</div>
-                    <div class="modal-price-final">${formatRupiah(p.price)}</div>
+                    <div class="modal-price-original">${formatRupiah(originalPrice)}</div>
+                    <div class="modal-price-final">${formatRupiah(price)}</div>
                 `;
             } else {
-                priceWrap.innerHTML = `<div class="modal-price-final">${formatRupiah(p.price)}</div>`;
+                priceWrap.innerHTML = `<div class="modal-price-final">${formatRupiah(price)}</div>`;
             }
 
             // --- LOGIKA TOMBOL BELI ---
             document.getElementById('m-btn-buy').onclick = () => {
-                // 1. Ambil nomor admin yang sudah dirotasi
                 const adminNumber = getRotatedAdminNumber();
                 
-                // 2. Siapkan Data Pesan
-                const templateName = p.title;
-                const price = formatRupiah(p.price);
+                const templateName = title;
+                const formattedPrice = formatRupiah(price);
                 
-                // Format Waktu Pesanan (Contoh: Senin, 20 Januari 2026, 14:30)
                 const orderTime = new Date().toLocaleString('id-ID', {
                     weekday: 'long',
                     year: 'numeric',
@@ -734,16 +788,14 @@
                     minute: '2-digit'
                 });
 
-                // 3. Format Pesan WhatsApp
                 const message = `Halo Admin, saya ingin membeli template CV berikut:
 
 *Nama Template:* ${templateName}
-*Harga:* ${price}
+*Harga:* ${formattedPrice}
 *Waktu Pesanan:* ${orderTime}
 
 Mohon info pembayaran selanjutnya. Terima kasih.`;
 
-                // 4. Buka WhatsApp
                 const waLink = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
                 window.open(waLink, '_blank');
             };
