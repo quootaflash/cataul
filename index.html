@@ -788,13 +788,13 @@
                     minute: '2-digit'
                 });
 
-                const message = `Halo Admin, saya ingin membeli template CV berikut:
+                const message = `Halo Min, saya ingin membeli CV berikut:
 
-*Nama Template:* ${templateName}
+*Jenis CV:* ${templateName}
 *Harga:* ${formattedPrice}
 *Waktu Pesanan:* ${orderTime}
 
-Mohon info pembayaran selanjutnya. Terima kasih.`;
+Mohon info pembayaran dan format data untuk pembuatan cv nya..`;
 
                 const waLink = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
                 window.open(waLink, '_blank');
