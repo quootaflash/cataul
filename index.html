@@ -45,7 +45,7 @@
         img { display: block; max-width: 100%; }
         button, input { font-family: inherit; border: none; outline: none; }
 
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; } /* Padding sedikit dikecilkan untuk mobile */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
         /* --- HEADER --- */
         header {
@@ -160,8 +160,8 @@
         /* --- PRODUCT GRID --- */
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Default Mobile 2 Kolom */
-            gap: 12px; /* Jarak antar kartu diperkecil sedikit agar muat */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
             margin-bottom: 60px;
         }
 
@@ -171,7 +171,7 @@
         /* --- CARD STYLE --- */
         .cv-card {
             background: var(--bg-card);
-            border-radius: 12px; /* Sedikit lebih kecil di mobile agar lega */
+            border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow-sm);
             transition: var(--transition);
@@ -190,7 +190,7 @@
 
         .card-image {
             position: relative;
-            padding-top: 100%; /* Square */
+            padding-top: 100%;
             background: #f1f5f9;
             overflow: hidden;
         }
@@ -217,12 +217,12 @@
         }
 
         .card-title {
-            font-size: 0.9rem; /* Ukuran font disesuaikan untuk mobile */
+            font-size: 0.9rem;
             font-weight: 600;
             color: var(--text-main);
             margin-bottom: 8px;
             line-height: 1.4;
-            height: 2.5rem; /* 2 baris kira-kira */
+            height: 2.5rem;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
@@ -243,7 +243,6 @@
             align-items: flex-start;
         }
 
-        /* Harga Coret (Asli) */
         .price-original {
             font-size: 0.7rem;
             color: var(--text-muted);
@@ -253,16 +252,14 @@
             white-space: nowrap;
         }
 
-        /* Harga Utama (Diskon/Normal) */
         .price-main {
-            font-size: 1rem; /* Ukuran proporsional mobile */
+            font-size: 1rem;
             font-weight: 700;
             color: var(--primary);
             line-height: 1.1;
             white-space: nowrap;
         }
 
-        /* Responsif untuk Desktop: Font lebih besar */
         @media (min-width: 768px) {
             .card-title { font-size: 1rem; height: 2.8rem; }
             .price-original { font-size: 0.8rem; }
@@ -305,7 +302,6 @@
         .modal-cat { color: var(--primary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .modal-title { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 16px; line-height: 1.3; }
         
-        /* Modal Pricing Style */
         .modal-price-wrap {
             display: flex;
             align-items: baseline;
@@ -478,7 +474,9 @@
         // --- KONFIGURASI ---
         const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
-        const ADMIN_WA = '6285885850204';
+        
+        // Nomor admin default (fallback jika database gagal)
+        const DEFAULT_ADMIN_WA = '6285885850204';
 
         let supabase;
         let useSupabase = false;
@@ -497,7 +495,7 @@
             { image: 'https://picsum.photos/seed/modern3/1200/500', link: '#' }
         ];
 
-        // --- DATA DUMMY (DITAMBAH original_price) ---
+        // --- DATA DUMMY ---
         const dummyData = [
             { id: 1, title: "Modern Creative Portfolio", category: "Creative", price: 50000, original_price: 75000, sold_count: 120, description: "Template dengan layout asimetris yang modern, cocok untuk industri kreatif.", image: "https://picsum.photos/seed/clean1/600/600" },
             { id: 2, title: "Executive Formal Blue", category: "Formal", price: 75000, original_price: null, sold_count: 85, description: "Struktur profesional untuk level manajerial dengan warna biru tenang.", image: "https://picsum.photos/seed/clean2/600/600" },
@@ -511,14 +509,57 @@
         let filteredProducts = [];
         let currentCategory = 'all';
 
+        // Variabel untuk menyimpan daftar nomor admin dari database
+        let adminNumbersList = [];
+
         // --- HELPER: Format Rupiah ---
         const formatRupiah = (num) => {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
         }
 
+        // --- FUNGSI AMBIL NOMOR ADMIN (DARI DATABASE) ---
+        async function fetchAdminNumbers() {
+            if (useSupabase) {
+                // Mengambil data dari tabel 'no_wa'
+                // Asumsi nama kolom nomor adalah 'nomor'. Jika beda, sesuaikan di sini.
+                const { data, error } = await supabase.from('no_wa').select('nomor');
+                
+                if (data && data.length > 0) {
+                    // Mapping data ke array string
+                    adminNumbersList = data.map(item => item.nomor).filter(n => n);
+                    console.log("Admin WA Numbers loaded:", adminNumbersList);
+                } else {
+                    console.warn("Gagal mengambil nomor WA atau tabel kosong, menggunakan default.");
+                }
+            }
+            
+            // Fallback: Jika array kosong (gagal DB atau tidak ada data), gunakan default
+            if (adminNumbersList.length === 0) {
+                adminNumbersList = [DEFAULT_ADMIN_WA];
+            }
+        }
+
+        // --- FUNGSI ROTASI ADMIN ---
+        function getRotatedAdminNumber() {
+            // Ambil index terakhir yang disimpan di browser (LocalStorage)
+            let currentIndex = parseInt(localStorage.getItem('wa_admin_index') || '0');
+            
+            // Ambil nomor berdasarkan index saat ini
+            const selectedNumber = adminNumbersList[currentIndex];
+            
+            // Hitung index berikutnya untuk rotasi (Round Robin)
+            let nextIndex = (currentIndex + 1) % adminNumbersList.length;
+            
+            // Simpan index berikutnya ke LocalStorage
+            localStorage.setItem('wa_admin_index', nextIndex.toString());
+            
+            return selectedNumber;
+        }
+
         // --- INIT ---
         async function init() {
             initSlider();
+            await fetchAdminNumbers(); // 1. Ambil nomor admin dulu
             await fetchProducts();
             await fetchAd();
             renderProducts();
@@ -606,19 +647,14 @@
                 card.className = 'cv-card';
                 card.onclick = () => openModal(p);
                 
-                // --- LOGIKA HARGA CORET DI GRID ---
                 let priceHTML = '';
                 if (p.original_price && p.original_price > p.price) {
-                    // Ada Diskon
                     priceHTML = `
                         <div class="price-original">${formatRupiah(p.original_price)}</div>
                         <div class="price-main">${formatRupiah(p.price)}</div>
                     `;
                 } else {
-                    // Normal / Tidak Ada Diskon
-                    priceHTML = `
-                        <div class="price-main">${formatRupiah(p.price)}</div>
-                    `;
+                    priceHTML = `<div class="price-main">${formatRupiah(p.price)}</div>`;
                 }
 
                 card.innerHTML = `
@@ -669,7 +705,6 @@
             document.getElementById('m-desc').innerText = p.description || "";
             document.getElementById('m-sold').innerText = p.sold_count || 0;
             
-            // --- LOGIKA HARGA CORET DI MODAL ---
             const priceWrap = document.getElementById('m-price-wrap');
             if (p.original_price && p.original_price > p.price) {
                 priceWrap.innerHTML = `
@@ -677,14 +712,40 @@
                     <div class="modal-price-final">${formatRupiah(p.price)}</div>
                 `;
             } else {
-                priceWrap.innerHTML = `
-                    <div class="modal-price-final">${formatRupiah(p.price)}</div>
-                `;
+                priceWrap.innerHTML = `<div class="modal-price-final">${formatRupiah(p.price)}</div>`;
             }
 
+            // --- LOGIKA TOMBOL BELI ---
             document.getElementById('m-btn-buy').onclick = () => {
-                const msg = `Halo, saya ingin membeli template CV: *${p.title}*`;
-                window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, '_blank');
+                // 1. Ambil nomor admin yang sudah dirotasi
+                const adminNumber = getRotatedAdminNumber();
+                
+                // 2. Siapkan Data Pesan
+                const templateName = p.title;
+                const price = formatRupiah(p.price);
+                
+                // Format Waktu Pesanan (Contoh: Senin, 20 Januari 2026, 14:30)
+                const orderTime = new Date().toLocaleString('id-ID', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                // 3. Format Pesan WhatsApp
+                const message = `Halo Admin, saya ingin membeli template CV berikut:
+
+*Nama Template:* ${templateName}
+*Harga:* ${price}
+*Waktu Pesanan:* ${orderTime}
+
+Mohon info pembayaran selanjutnya. Terima kasih.`;
+
+                // 4. Buka WhatsApp
+                const waLink = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
+                window.open(waLink, '_blank');
             };
 
             document.getElementById('productModal').classList.add('active');
