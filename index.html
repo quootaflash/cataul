@@ -1,137 +1,325 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Katalog CV | WriteHub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Pro Marketplace - Connected to Supabase</title>
     
-    <!-- Tailwind CDN (dengan script config) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Import Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-    <script>
-        tailwind.config = {
-            content: [],
-            theme: {
-                extend: {
-                    colors: {
-                        brand: '#221E82'
-                    }
-                }
-            }
+    <style>
+        /* CSS SAMA SEPERTI SEBELUMNYA (Dipersingkat untuk kerapian) */
+        :root {
+            --primary: #2563EB; --primary-dark: #1E40AF; --secondary: #0F172A;
+            --bg-light: #F8FAFC; --text-main: #334155; --text-muted: #64748B;
+            --white: #FFFFFF; --border: #E2E8F0; --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1); --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 12px; --container-width: 1200px;
         }
-    </script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: var(--text-main); }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        
+        /* Layout */
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+        .section-title { font-size: 1.75rem; font-weight: 700; color: var(--secondary); margin-bottom: 10px; }
+        .section-subtitle { color: var(--text-muted); margin-bottom: 30px; }
+        
+        /* Header */
+        header { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; padding: 15px 0; }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+        .logo img { height: 40px; width: auto; }
+        
+        /* Hero Slider */
+        .hero { position: relative; height: 450px; overflow: hidden; background: var(--secondary); color: var(--white); display: flex; align-items: center; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease-in-out; background-size: cover; background-position: center; }
+        .slide.active { opacity: 1; }
+        .slide::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); }
+        .hero-content { position: relative; z-index: 2; max-width: 600px; }
+        .hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 20px; }
+        .hero p { font-size: 1.1rem; color: #CBD5E1; margin-bottom: 30px; }
+        .btn-cta { background: var(--primary); color: var(--white); padding: 12px 30px; border-radius: 50px; font-weight: 600; display: inline-block; }
+        
+        /* Filter Bar */
+        .search-filter-bar { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow-sm); margin: -40px auto 40px; position: relative; z-index: 10; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; }
+        .search-box { flex: 2; min-width: 250px; position: relative; }
+        .search-box input { width: 100%; padding: 12px 15px 12px 45px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .filter-box { flex: 1; min-width: 200px; }
+        .filter-box select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: white; outline: none; cursor: pointer; }
+
+        /* Categories */
+        .categories-section { padding: 20px 0 50px; }
+        .category-list { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+        .cat-chip { padding: 10px 20px; background: var(--white); border: 1px solid var(--border); border-radius: 50px; white-space: nowrap; cursor: pointer; font-weight: 500; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .cat-chip.active, .cat-chip:hover { background: var(--primary); color: var(--white); border-color: var(--primary); }
+
+        /* Product Grid */
+        .products-section { padding-bottom: 80px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .product-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .card-image { height: 200px; overflow: hidden; position: relative; background: #eee; }
+        .card-image img { width: 100%; height: 100%; object-fit: cover; }
+        .badge-cat { position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; }
+        .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--secondary); }
+        .card-desc { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; flex: 1; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: 1px solid var(--bg-light); padding-top: 15px; }
+        .price { font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .btn-buy { background: var(--secondary); color: white; padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-buy:hover { background: var(--primary); }
+
+        /* Footer & Utils */
+        footer { background: var(--secondary); color: #CBD5E1; padding: 50px 0 20px; }
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--secondary); color: white; padding: 15px 25px; border-radius: 8px; box-shadow: var(--shadow-lg); transform: translateY(100px); opacity: 0; transition: 0.4s; z-index: 1000; display: flex; align-items: center; gap: 10px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .loading-spinner { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+        .error-msg { text-align: center; padding: 40px; color: red; font-weight: bold; }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body>
 
-    <nav class="fixed top-0 w-full bg-white/95 backdrop-blur shadow-sm z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzgVAIKgZMS9W7eJKCaRyaFnoDviThQstfeD9l9mcwPxUDoovGo7xB3RQByxTXo15fGX0DIeTMxOWkVovnB4FC35iJN6ArGLOlBRI9U4d4gJ7VOTOp-Ki47RIaViiIs12QGjxRmGs2cQzCFniRpBE0GyNLW3s_03rvTcpPeHAruMaUdrIKNX8jaFZ1TcBw/s3264/28063.png" 
-                     alt="WriteHub" class="h-12">
-                <span class="text-2xl font-bold text-brand">WriteHub</span>
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <img src="https://picsum.photos/seed/logo1/100/100" alt="Logo">
+                CV Pro
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <div class="slide active" style="background-image: url('https://picsum.photos/seed/office1/1200/600');"></div>
+            <div class="slide" style="background-image: url('https://picsum.photos/seed/work2/1200/600');"></div>
+            <div class="container hero-content">
+                <h1>Database CV Profesional</h1>
+                <p>Data diambil langsung dari Supabase Cloud.</p>
+                <a href="#produk" class="btn-cta">Lihat Data</a>
             </div>
+        </section>
+
+        <div class="container">
+            <!-- SEARCH & FILTER -->
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <i class="ph ph-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Cari template CV...">
+                </div>
+                <div class="filter-box">
+                    <select id="priceFilter">
+                        <option value="all">Semua Harga</option>
+                        <option value="low">Di bawah Rp 50.000</option>
+                        <option value="mid">Rp 50.000 - Rp 100.000</option>
+                        <option value="high">Di atas Rp 100.000</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- KATEGORI -->
+            <section class="categories-section">
+                <h2 class="section-title">Kategori</h2>
+                <div class="category-list" id="categoryContainer">
+                    <!-- Categories injected JS -->
+                </div>
+            </section>
+
+            <!-- PRODUK -->
+            <section id="produk" class="products-section">
+                <h2 class="section-title">Katalog Produk</h2>
+                <div id="loadingIndicator" class="loading-spinner">
+                    <i class="ph ph-spinner ph-spin" style="font-size: 2rem;"></i> <br>
+                    Memuat data dari Supabase...
+                </div>
+                <div id="errorMessage" class="error-msg" style="display:none;"></div>
+                
+                <div class="product-grid" id="productGrid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
         </div>
-    </nav>
+    </main>
 
-    <section class="pt-28 pb-12 px-6 max-w-7xl mx-auto">
-        <h1 class="text-4xl font-bold text-center mb-10">Katalog Paket CV</h1>
-
-        <div id="status" class="text-center mb-8 min-h-[60px]"></div>
-        <div id="loading" class="py-12 text-center">
-            <div class="inline-block w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
-            <p class="mt-3 text-gray-500">Menghubungkan ke database...</p>
+    <div id="toast" class="toast">
+        <i class="ph ph-whatsapp-logo" style="font-size: 1.5rem; color: #25D366;"></i>
+        <div>
+            <strong>Redirecting...</strong>
+            <div style="font-size: 0.85rem;">Membuka WhatsApp Admin</div>
         </div>
+    </div>
 
-        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-    </section>
+    <!-- LOGIC SCRIPT (MODULE) -->
+    <script type="module">
+        // 1. IMPORT SUPABASE LIBRARY (CDN)
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    <!-- Supabase -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+        // 2. KONFIGURASI KONEKSI (GANTI BAGIAN INI!)
+        // -------------------------------------------------------------------
+        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';     // Contoh: https://xyz.supabase.co
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc'; // Contoh: eyJhbGciOiJIUzI1NiIsInR5c...
+        
+        // Inisialisasi Klien Supabase
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+        // -------------------------------------------------------------------
 
-    <script>
-        // ================== GANTI INI ==================
-        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
+        // 3. STATE DATA
+        let allProducts = []; // Menyimpan data mentah dari database
+        let state = {
+            activeCategory: 'all',
+            searchQuery: '',
+            priceFilter: 'all'
+        };
 
-        async function fetchProducts() {
-            const status = document.getElementById('status');
-            const loading = document.getElementById('loading');
-            const grid = document.getElementById('product-grid');
+        // Data Kategori (Hardcoded untuk UI, bisa juga di-databasekan)
+        const categories = [
+            { id: 'all', name: 'Semua', icon: 'squares-four' },
+            { id: 'creative', name: 'Creative', icon: 'paint-brush' },
+            { id: 'formal', name: 'Formal/Bisnis', icon: 'briefcase' },
+            { id: 'it', name: 'Tech & IT', icon: 'code' },
+            { id: 'freshgrad', name: 'Fresh Graduate', icon: 'student' },
+            { id: 'executive', name: 'Executive', icon: 'user-gear' }
+        ];
 
-            loading.style.display = 'block';
-            grid.innerHTML = '';
+        // DOM ELEMENTS
+        const productGrid = document.getElementById('productGrid');
+        const categoryContainer = document.getElementById('categoryContainer');
+        const searchInput = document.getElementById('searchInput');
+        const priceFilter = document.getElementById('priceFilter');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const errorMessage = document.getElementById('errorMessage');
 
+        // 4. FUNGSI UTAMA: AMBIL DATA DARI SUPABASE
+        async function fetchProductsFromSupabase() {
             try {
-                const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
+                // Query: Pilih semua kolom dari tabel 'products', urutkan berdasarkan harga
                 const { data, error } = await supabase
                     .from('products')
                     .select('*')
-                    .order('id', { ascending: true });
-
-                loading.style.display = 'none';
+                    .order('price', { ascending: true });
 
                 if (error) throw error;
 
-                if (data && data.length > 0) {
-                    status.innerHTML = `<span class="bg-green-100 text-green-700 px-6 py-3 rounded-3xl text-sm font-medium">✅ Berhasil memuat ${data.length} paket CV</span>`;
-                    renderProducts(data);
-                } else {
-                    status.innerHTML = `<span class="bg-yellow-100 text-yellow-700 px-6 py-3 rounded-3xl text-sm font-medium">⚠️ Belum ada data, menampilkan contoh</span>`;
-                    loadDummyData();
-                }
-            } catch (err) {
-                loading.style.display = 'none';
-                console.error("Error:", err);
-
-                status.innerHTML = `
-                    <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-5 rounded-3xl max-w-md mx-auto">
-                        <p class="font-medium">Gagal mengambil data dari Supabase</p>
-                        <p class="text-xs mt-2">${err.message}</p>
-                    </div>`;
+                // Simpan data ke variabel lokal
+                allProducts = data || [];
                 
-                loadDummyData();
+                // Sembunyikan loading, render produk
+                loadingIndicator.style.display = 'none';
+                renderCategories();
+                renderProducts();
+
+            } catch (err) {
+                console.error("Error fetching data:", err);
+                loadingIndicator.style.display = 'none';
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = "Gagal memuat data. Cek Console (F12) atau koneksi internet Anda.";
             }
         }
 
-        function loadDummyData() {
-            const dummy = [
-                { name: "CV Fresh Graduate", price: "Rp 99.000", description: "Desain bersih, ATS Friendly, cocok untuk lulusan baru.", image_url: "https://images.unsplash.com/photo-1586281380349-632531db7ed4" },
-                { name: "CV Professional", price: "Rp 199.000", description: "Highlight pengalaman kerja dan pencapaian.", image_url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113" },
-                { name: "CV Executive", price: "Rp 350.000", description: "Untuk level manajerial dan direktur.", image_url: "https://images.unsplash.com/photo-1552664730-d307ca884978" }
-            ];
-            renderProducts(dummy);
+        // 5. FUNGSI RENDER UI
+        function renderCategories() {
+            categoryContainer.innerHTML = categories.map(cat => `
+                <button class="cat-chip ${state.activeCategory === cat.id ? 'active' : ''}" 
+                        onclick="window.handleCategoryClick('${cat.id}')">
+                    <i class="ph ph-${cat.icon}"></i>
+                    ${cat.name}
+                </button>
+            `).join('');
         }
 
-        function renderProducts(products) {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = '';
-
-            products.forEach(product => {
-                const waLink = `https://wa.me/6288219673570?text=Halo%20Admin,%20saya%20mau%20pesan%20${encodeURIComponent(product.name)}`;
+        function renderProducts() {
+            // Filter Data (Client-side filtering)
+            const filtered = allProducts.filter(product => {
+                const matchCat = state.activeCategory === 'all' || product.category === state.activeCategory;
+                const searchLower = state.searchQuery.toLowerCase();
+                const matchSearch = product.title.toLowerCase().includes(searchLower) || 
+                                    product.description.toLowerCase().includes(searchLower);
                 
-                grid.innerHTML += `
-                    <div class="bg-white rounded-3xl overflow-hidden border border-gray-100 hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
-                        <img src="${product.image_url}" class="w-full h-52 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold">${product.name}</h3>
-                            <p class="text-3xl font-bold text-brand mt-2 mb-3">${product.price}</p>
-                            <p class="text-gray-600 text-sm line-clamp-3">${product.description}</p>
-                            <a href="${waLink}" target="_blank" 
-                               class="mt-6 w-full block text-center bg-green-500 hover:bg-green-600 text-white font-semibold py-4 rounded-2xl transition">
-                                <i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp
-                            </a>
+                let matchPrice = true;
+                if (state.priceFilter === 'low') matchPrice = product.price < 50000;
+                if (state.priceFilter === 'mid') matchPrice = product.price >= 50000 && product.price <= 100000;
+                if (state.priceFilter === 'high') matchPrice = product.price > 100000;
+
+                return matchCat && matchSearch && matchPrice;
+            });
+
+            // Render HTML
+            if (filtered.length === 0) {
+                productGrid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;">Data tidak ditemukan.</div>`;
+                return;
+            }
+
+            productGrid.innerHTML = filtered.map(product => {
+                const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(product.price);
+                const categoryName = categories.find(c => c.id === product.category)?.name || 'Umur';
+
+                return `
+                <div class="product-card">
+                    <div class="card-image">
+                        <span class="badge-cat">${categoryName}</span>
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${product.title}</h3>
+                        <p class="card-desc">${product.description}</p>
+                        <div class="card-footer">
+                            <span class="price">${formattedPrice}</span>
+                            <button class="btn-buy" onclick="window.buyViaWhatsapp(${product.id})">
+                                <i class="ph ph-whatsapp-logo"></i> Beli
+                            </button>
                         </div>
                     </div>
-                `;
-            });
+                </div>
+            `}).join('');
         }
 
-        // Start
-        window.onload = fetchProducts;
+        // 6. EVENT HANDLERS
+        // Export ke window agar bisa dipanggil dari HTML onclick
+        window.handleCategoryClick = (catId) => {
+            state.activeCategory = catId;
+            renderCategories();
+            renderProducts();
+        };
+
+        window.buyViaWhatsapp = async (productId) => {
+            // Cari produk berdasarkan ID (karena data sudah di filter, cari di data asli allProducts)
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            const adminPhone = "6281234567890"; // Ganti nomor WA admin
+            const message = `Halo, saya mau beli: ${product.title} (Harga: ${product.price})`;
+            const url = `https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+
+            // Feedback UI
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+
+            // Buka WA
+            setTimeout(() => window.open(url, '_blank'), 1000);
+        };
+
+        // Listeners untuk input filter
+        searchInput.addEventListener('input', (e) => {
+            state.searchQuery = e.target.value;
+            renderProducts();
+        });
+
+        priceFilter.addEventListener('change', (e) => {
+            state.priceFilter = e.target.value;
+            renderProducts();
+        });
+
+        // Jalankan saat halaman dimuat
+        fetchProductsFromSupabase();
+
     </script>
 </body>
 </html>
