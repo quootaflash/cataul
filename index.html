@@ -445,7 +445,7 @@
                     <p id="m-desc" class="modal-desc">Description here...</p>
                     
                     <div style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">
-                        <i class="fas fa-check-circle" style="color:var(--primary)"></i> Terpakai <span id="m-sold">0</span> kali
+                        <i class="fas fa-check-circle" style="color:var(--primary)"></i> Terpakai <span id="m-sold">0</span>x
                     </div>
 
                     <button id="m-btn-buy" class="btn-buy">
@@ -597,7 +597,7 @@
             grid.innerHTML = '';
             
             if(filteredProducts.length === 0) {
-                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;">Produk tidak ditemukan</p>';
+                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;">CV tidak ditemukan</p>';
                 return;
             }
 
@@ -632,7 +632,7 @@
                             <div class="price-container">
                                 ${priceHTML}
                             </div>
-                            <div class="sold-info">${p.sold_count || 0} Terjual</div>
+                            <div class="sold-info">${p.sold_count || 0} Terpakai</div>
                         </div>
                     </div>
                 `;
