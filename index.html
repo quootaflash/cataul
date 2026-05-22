@@ -1,154 +1,745 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CVPro - Marketplace CV Profesional</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Market - Jual Template CV Profesional</title>
+    
+    <!-- Menggunakan Font Google: Poppins untuk tampilan modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ikon dari FontAwesome (CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <style>
-    .hero {
-      background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-                        url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920');
-      background-size: cover;
-      background-position: center;
-    }
-  </style>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #2563eb;       /* Biru Utama */
+            --primary-dark: #1e40af;
+            --secondary: #0f172a;     /* Warna Gelap/Teks */
+            --accent: #f59e0b;        /* Kuning Aksen */
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--secondary);
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        /* --- HEADER & NAVIGATION --- */
+        header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.8rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo img {
+            height: 40px; /* Ukuran Logo PNG */
+            width: auto;
+        }
+
+        .search-bar-header {
+            display: none; /* Hidden on mobile initially */
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            position: relative;
+        }
+
+        .search-bar-header input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            background: var(--bg-light);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-bar-header input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-bar-header i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        @media (min-width: 768px) {
+            .search-bar-header { display: block; }
+        }
+
+        /* --- HERO SLIDER --- */
+        .hero-section {
+            position: relative;
+            height: 500px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Overlay gelap */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: var(--white);
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .btn-cta {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .btn-cta:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* --- FILTERS & MAIN CONTENT --- */
+        .marketplace-section {
+            padding: 40px 0;
+        }
+
+        .filters-container {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .filter-control {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            width: 100%;
+        }
+
+        .price-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        /* --- PRODUCT GRID --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .cv-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cv-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-image {
+            height: 200px;
+            background-color: #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .cv-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: var(--secondary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-tag {
+            font-size: 0.75rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cv-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .cv-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: auto;
+            margin-bottom: 15px;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 10px;
+            background-color: #25D366; /* Warna WhatsApp */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-buy:hover {
+            background-color: #128C7E;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--white);
+        }
+
+        .copyright {
+            text-align: center;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        /* --- TOAST NOTIFICATION --- */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--secondary);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 1.8rem; }
+            .filters-container { flex-direction: column; align-items: stretch; }
+            .nav-wrapper { flex-direction: column; gap: 15px; }
+            .search-bar-header { display: flex; margin: 0; max-width: 100%; }
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-  <!-- Navbar -->
-  <nav class="bg-white shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <img src="https://via.placeholder.com/160x50/4f46e5/ffffff?text=CVPro" alt="Logo" class="h-10"/>
-        <h1 class="text-3xl font-bold text-indigo-600">CVPro</h1>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <div class="hero h-screen flex items-center text-white">
-    <div class="max-w-4xl mx-auto text-center px-6">
-      <h1 class="text-5xl md:text-6xl font-bold mb-6">CV Profesional Siap Pakai</h1>
-      <p class="text-xl mb-8">Template CV modern • Langsung hubungi via WhatsApp</p>
-      <button onclick="document.getElementById('produk').scrollIntoView({ behavior: 'smooth' })" 
-              class="bg-indigo-600 hover:bg-indigo-700 px-10 py-4 rounded-2xl text-lg font-semibold">
-        Lihat Semua CV →
-      </button>
-    </div>
-  </div>
-
-  <div class="max-w-7xl mx-auto px-6 py-12">
-    <div class="flex flex-col md:flex-row gap-4 mb-10">
-      <input type="text" id="search" placeholder="Cari CV..." 
-             class="flex-1 px-6 py-4 rounded-2xl border focus:outline-none focus:border-indigo-500 text-lg"
-             onkeyup="filterCV()">
-      <select id="priceFilter" onchange="filterCV()" class="px-6 py-4 rounded-2xl border focus:outline-none">
-        <option value="">Semua Harga</option>
-        <option value="100000">≤ Rp 100.000</option>
-        <option value="200000">Rp 100.000 - 200.000</option>
-        <option value="999999">> Rp 200.000</option>
-      </select>
-    </div>
-
-    <h2 class="text-3xl font-bold mb-6">Kategori CV</h2>
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12" id="categories"></div>
-
-    <h2 class="text-3xl font-bold mb-8" id="produk">Template CV Tersedia</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cvList"></div>
-  </div>
-
-  <footer class="bg-gray-900 text-white py-12 text-center">
-    <p>© 2026 CVPro</p>
-  </footer>
-
-  <script>
-    const SUPABASE_URL = "https://neuylewfsxcuhayegygf.supabase.co/rest/v1/";     // GANTI
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc";                         // GANTI
-
-    const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    let allCVs = [];
-
-    async function fetchCVs() {
-      try {
-        const { data, error } = await supabase
-          .from('cvs')
-          .select('*')
-          .order('price', { ascending: true });
-
-        if (error) throw error;
-
-        allCVs = data || [];
-        renderCategories();
-        renderCVs(allCVs);
-      } catch (err) {
-        console.error(err);
-        alert("Gagal mengambil data. Cek Supabase URL dan API Key Anda.");
-      }
-    }
-
-    function renderCategories() {
-      const cats = [...new Set(allCVs.map(cv => cv.category))];
-      document.getElementById('categories').innerHTML = cats.map(cat => `
-        <div onclick="filterByCategory('${cat}')" class="bg-white p-6 rounded-2xl text-center font-semibold cursor-pointer hover:bg-indigo-50 border border-gray-200">
-          ${cat}
-        </div>
-      `).join('');
-    }
-
-    function renderCVs(cvs) {
-      document.getElementById('cvList').innerHTML = cvs.map(cv => `
-        <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition">
-          <img src="${cv.image_url}" class="w-full h-56 object-cover"/>
-          <div class="p-6">
-            <h3 class="font-bold text-xl">${cv.title}</h3>
-            <p class="text-gray-500">${cv.category}</p>
-            <div class="mt-4 flex justify-between items-center">
-              <span class="text-2xl font-bold text-indigo-600">Rp ${cv.price.toLocaleString('id-ID')}</span>
-              <button onclick="buyCV('${cv.whatsapp}', '${cv.title}')" 
-                      class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2">
-                <i class="fab fa-whatsapp"></i> Beli
-              </button>
+    <!-- Header -->
+    <header>
+        <div class="container nav-wrapper">
+            <a href="#" class="logo">
+                <!-- Placeholder Logo PNG -->
+                <img src="https://via.placeholder.com/40x40/2563eb/ffffff?text=CV" alt="Logo CV Market">
+                <span>CV Market</span>
+            </a>
+            
+            <div class="search-bar-header">
+                <input type="text" id="headerSearch" placeholder="Cari template CV...">
+                <i class="fas fa-search"></i>
             </div>
-          </div>
         </div>
-      `).join('');
-    }
+    </header>
 
-    function filterCV() {
-      const search = document.getElementById('search').value.toLowerCase();
-      const priceVal = document.getElementById('priceFilter').value;
+    <!-- Hero Slider -->
+    <section class="hero-section">
+        <!-- Slide 1 -->
+        <div class="slide active" style="background-image: url('https://picsum.photos/seed/office1/1200/500');">
+            <div class="hero-content">
+                <h1>Langganan Karir Impianmu</h1>
+                <p>Koleksi template CV profesional yang dirancang untuk lolos ATS (Applicant Tracking System).</p>
+                <a href="#marketplace" class="btn-cta">Lihat Koleksi</a>
+            </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide" style="background-image: url('https://picsum.photos/seed/work2/1200/500');">
+            <div class="hero-content">
+                <h1>Desain Elegan & Modern</h1>
+                <p>Tampil beda di mata rekruter dengan desain CV yang bersih dan terstruktur.</p>
+                <a href="#marketplace" class="btn-cta">Beli Sekarang</a>
+            </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide" style="background-image: url('https://picsum.photos/seed/tech3/1200/500');">
+            <div class="hero-content">
+                <h1>Solusi Cepat & Mudah</h1>
+                <p>Download, edit di Word/Canva, dan siap kirim dalam hitungan menit.</p>
+                <a href="#marketplace" class="btn-cta">Mulai</a>
+            </div>
+        </div>
+    </section>
 
-      const filtered = allCVs.filter(cv => {
-        const matchSearch = cv.title.toLowerCase().includes(search) || cv.category.toLowerCase().includes(search);
-        let matchPrice = true;
+    <!-- Main Marketplace Area -->
+    <main id="marketplace" class="container marketplace-section">
+        
+        <!-- Filters -->
+        <div class="filters-container">
+            <!-- Search -->
+            <div class="filter-group" style="flex: 2;">
+                <label for="searchInput">Cari Nama CV</label>
+                <input type="text" id="searchInput" class="filter-control" placeholder="Contoh: CV Creative, CV Fresh Graduate...">
+            </div>
 
-        if (priceVal === "100000") matchPrice = cv.price <= 100000;
-        else if (priceVal === "200000") matchPrice = cv.price > 100000 && cv.price <= 200000;
-        else if (priceVal === "999999") matchPrice = cv.price > 200000;
+            <!-- Category Filter -->
+            <div class="filter-group">
+                <label for="categoryFilter">Kategori</label>
+                <select id="categoryFilter" class="filter-control">
+                    <option value="all">Semua Kategori</option>
+                    <option value="Creative">Creative Design</option>
+                    <option value="Formal">Formal / Korporat</option>
+                    <option value="Tech">IT & Tech</option>
+                    <option value="Simple">Minimalis</option>
+                </select>
+            </div>
 
-        return matchSearch && matchPrice;
-      });
+            <!-- Price Filter -->
+            <div class="filter-group">
+                <label>Range Harga (IDR)</label>
+                <div class="price-inputs">
+                    <input type="number" id="minPrice" class="filter-control" placeholder="Min">
+                    <span>-</span>
+                    <input type="number" id="maxPrice" class="filter-control" placeholder="Max">
+                </div>
+            </div>
+        </div>
 
-      renderCVs(filtered);
-    }
+        <!-- Product Grid -->
+        <div class="product-grid" id="productGrid">
+            <!-- Products will be injected here via JavaScript -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--primary);"></i>
+                <p style="margin-top: 10px;">Memuat data...</p>
+            </div>
+        </div>
 
-    function filterByCategory(cat) {
-      const filtered = allCVs.filter(cv => cv.category === cat);
-      renderCVs(filtered);
-    }
+    </main>
 
-    function buyCV(wa, title) {
-      const msg = encodeURIComponent(`Halo, saya ingin membeli: ${title}`);
-      window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
-    }
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CV Market</h3>
+                    <p>Platform marketplace template CV terpercaya di Indonesia untuk membantu karir Anda.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Kategori</h3>
+                    <ul>
+                        <li><a href="#">Creative Design</a></li>
+                        <li><a href="#">Formal</a></li>
+                        <li><a href="#">IT & Tech</a></li>
+                        <li><a href="#">Akuntansi</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Bantuan</h3>
+                    <ul>
+                        <li><a href="#">Cara Pembelian</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Kontak Admin</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 CV Market. All rights reserved.
+            </div>
+        </div>
+    </footer>
 
-    window.onload = fetchCVs;
-  </script>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fab fa-whatsapp" style="font-size: 1.2rem;"></i>
+        <span>Mengarahkan ke WhatsApp...</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script type="module">
+        // ==========================================
+        // KONFIGURASI SUPABASE
+        // ==========================================
+        // Ganti dengan URL dan Key Supabase project Anda sendiri
+        const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co/rest/v1/'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc'; 
+        
+        // Nomor WhatsApp Admin (Format internasional tanpa +)
+        const ADMIN_WA = '6281234567890'; 
+
+        // Import Supabase Client dari CDN
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        let supabase;
+        let useSupabase = false; // Flag untuk switch mode
+
+        // Cek jika kredensial sudah diisi user, jika tidak gunakan dummy data
+        if (SUPABASE_URL !== 'https://xyzcompany.supabase.co' && SUPABASE_ANON_KEY.length > 50) {
+            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            useSupabase = true;
+            console.log("Mode: Supabase Connected");
+        } else {
+            console.log("Mode: Demo Data (Silakan isi konfigurasi Supabase)");
+        }
+
+        // ==========================================
+        // DATA DUMMY (Untuk Demo jika belum ada DB)
+        // ==========================================
+        const dummyData = [
+            { id: 1, title: "CV Creative Pro", category: "Creative", price: 50000, image: "https://picsum.photos/seed/cv1/300/400" },
+            { id: 2, title: "CV Corporate Blue", category: "Formal", price: 75000, image: "https://picsum.photos/seed/cv2/300/400" },
+            { id: 3, title: "Tech Developer Resume", category: "Tech", price: 100000, image: "https://picsum.photos/seed/cv3/300/400" },
+            { id: 4, title: "Minimalist Clean", category: "Simple", price: 45000, image: "https://picsum.photos/seed/cv4/300/400" },
+            { id: 5, title: "Bold Designer CV", category: "Creative", price: 60000, image: "https://picsum.photos/seed/cv5/300/400" },
+            { id: 6, title: "Manager Executive", category: "Formal", price: 120000, image: "https://picsum.photos/seed/cv6/300/400" },
+            { id: 7, title: "Frontend Dev Kit", category: "Tech", price: 90000, image: "https://picsum.photos/seed/cv7/300/400" },
+            { id: 8, title: "Fresh Graduate Pink", category: "Simple", price: 35000, image: "https://picsum.photos/seed/cv8/300/400" },
+        ];
+
+        // State Aplikasi
+        let products = [];
+        let filteredProducts = [];
+
+        // ==========================================
+        // LOGIC: FETCH DATA
+        // ==========================================
+        async function fetchProducts() {
+            if (useSupabase) {
+                // Fetch dari Supabase
+                // Asumsi nama tabel adalah 'cvs'
+                const { data, error } = await supabase
+                    .from('cvs')
+                    .select('*');
+                
+                if (error) {
+                    console.error('Error fetching data:', error);
+                    showToast('Gagal memuat data database, menggunakan data lokal.', true);
+                    products = dummyData;
+                } else {
+                    products = data;
+                }
+            } else {
+                // Simulasi loading delay
+                await new Promise(r => setTimeout(r, 800));
+                products = dummyData;
+            }
+            
+            filteredProducts = [...products];
+            renderProducts();
+        }
+
+        // ==========================================
+        // LOGIC: RENDER PRODUCTS
+        // ==========================================
+        const grid = document.getElementById('productGrid');
+
+        function renderProducts() {
+            grid.innerHTML = '';
+
+            if (filteredProducts.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--gray);">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Tidak ada CV yang cocok dengan pencarian Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'cv-card';
+                card.innerHTML = `
+                    <div class="card-image">
+                        <span class="card-badge">${product.category}</span>
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>
+                    <div class="card-body">
+                        <div class="category-tag">Template</div>
+                        <h3 class="cv-title">${product.title}</h3>
+                        <div class="cv-price">Rp ${product.price.toLocaleString('id-ID')}</div>
+                        <button class="btn-buy" onclick="buyViaWhatsApp('${product.title}', ${product.price})">
+                            <i class="fab fa-whatsapp"></i> Beli Sekarang
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // LOGIC: FILTERS
+        // ==========================================
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const minPrice = document.getElementById('minPrice');
+        const maxPrice = document.getElementById('maxPrice');
+
+        function filterProducts() {
+            const query = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+            const min = minPrice.value ? parseInt(minPrice.value) : 0;
+            const max = maxPrice.value ? parseInt(maxPrice.value) : Infinity;
+
+            filteredProducts = products.filter(product => {
+                // Filter Text
+                const matchText = product.title.toLowerCase().includes(query);
+                // Filter Category
+                const matchCategory = category === 'all' || product.category === category;
+                // Filter Price
+                const matchPrice = product.price >= min && product.price <= max;
+
+                return matchText && matchCategory && matchPrice;
+            });
+
+            renderProducts();
+        }
+
+        // Event Listeners untuk Filter
+        searchInput.addEventListener('input', filterProducts);
+        categoryFilter.addEventListener('change', filterProducts);
+        minPrice.addEventListener('input', filterProducts);
+        maxPrice.addEventListener('input', filterProducts);
+
+        // Sinkronisasi search header dengan search filter
+        document.getElementById('headerSearch').addEventListener('input', (e) => {
+            searchInput.value = e.target.value;
+            filterProducts();
+        });
+
+        // ==========================================
+        // LOGIC: WHATSAPP REDIRECT
+        // ==========================================
+        window.buyViaWhatsApp = function(title, price) {
+            showToast("Membuka WhatsApp...");
+            
+            // Format Pesan
+            const message = `Halo Admin, saya tertarik membeli template CV:\n\n*Nama:* ${title}\n*Harga:* Rp ${price.toLocaleString('id-ID')}\n\nMohon info pembayarannya. Terima kasih.`;
+            
+            // Encode URL
+            const url = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(message)}`;
+            
+            // Delay sedikit agar toast terlihat
+            setTimeout(() => {
+                window.open(url, '_blank');
+            }, 1000);
+        }
+
+        // ==========================================
+        // LOGIC: TOAST NOTIFICATION
+        // ==========================================
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="${isError ? 'fas fa-exclamation-circle' : 'fab fa-whatsapp'}"></i> <span>${msg}</span>`;
+            toast.style.background = isError ? '#ef4444' : '#0f172a';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================
+        // LOGIC: HERO SLIDER
+        // ==========================================
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Ganti slide setiap 5 detik
+        setInterval(nextSlide, 5000);
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        // Eksekusi fetch produk saat halaman dimuat
+        fetchProducts();
+
+    </script>
 </body>
 </html>
