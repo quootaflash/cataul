@@ -5,26 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CVPro - Marketplace CV Profesional</title>
   
-  <!-- Tailwind CSS CDN (untuk development & demo) -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Custom styles untuk mengurangi warning dan improve tampilan */
     .hero {
       background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
                         url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1920');
       background-size: cover;
       background-position: center;
-    }
-    .card-hover {
-      transition: all 0.3s ease;
-    }
-    .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     }
   </style>
 </head>
@@ -34,7 +24,7 @@
   <nav class="bg-white shadow-md sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
       <div class="flex items-center gap-3">
-        <img src="https://via.placeholder.com/160x50/4f46e5/ffffff?text=CVPro" alt="CVPro" class="h-10"/>
+        <img src="https://via.placeholder.com/160x50/4f46e5/ffffff?text=CVPro" alt="Logo" class="h-10"/>
         <h1 class="text-3xl font-bold text-indigo-600">CVPro</h1>
       </div>
     </div>
@@ -44,24 +34,20 @@
   <div class="hero h-screen flex items-center text-white">
     <div class="max-w-4xl mx-auto text-center px-6">
       <h1 class="text-5xl md:text-6xl font-bold mb-6">CV Profesional Siap Pakai</h1>
-      <p class="text-xl mb-8">Ratusan template CV modern • Langsung download setelah pembayaran via WhatsApp</p>
+      <p class="text-xl mb-8">Template CV modern • Langsung hubungi via WhatsApp</p>
       <button onclick="document.getElementById('produk').scrollIntoView({ behavior: 'smooth' })" 
-              class="bg-indigo-600 hover:bg-indigo-700 px-10 py-4 rounded-2xl text-lg font-semibold transition">
+              class="bg-indigo-600 hover:bg-indigo-700 px-10 py-4 rounded-2xl text-lg font-semibold">
         Lihat Semua CV →
       </button>
     </div>
   </div>
 
   <div class="max-w-7xl mx-auto px-6 py-12">
-
-    <!-- Search & Filter -->
     <div class="flex flex-col md:flex-row gap-4 mb-10">
-      <input type="text" id="search" placeholder="Cari CV (contoh: Engineer, Marketing, Designer...)" 
-             class="flex-1 px-6 py-4 rounded-2xl border border-gray-300 focus:outline-none focus:border-indigo-500 text-lg"
+      <input type="text" id="search" placeholder="Cari CV..." 
+             class="flex-1 px-6 py-4 rounded-2xl border focus:outline-none focus:border-indigo-500 text-lg"
              onkeyup="filterCV()">
-      
-      <select id="priceFilter" onchange="filterCV()" 
-              class="px-6 py-4 rounded-2xl border border-gray-300 focus:outline-none focus:border-indigo-500 text-base">
+      <select id="priceFilter" onchange="filterCV()" class="px-6 py-4 rounded-2xl border focus:outline-none">
         <option value="">Semua Harga</option>
         <option value="100000">≤ Rp 100.000</option>
         <option value="200000">Rp 100.000 - 200.000</option>
@@ -69,71 +55,64 @@
       </select>
     </div>
 
-    <!-- Kategori -->
     <h2 class="text-3xl font-bold mb-6">Kategori CV</h2>
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12" id="categories"></div>
 
-    <!-- Produk -->
     <h2 class="text-3xl font-bold mb-8" id="produk">Template CV Tersedia</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cvList"></div>
   </div>
 
   <footer class="bg-gray-900 text-white py-12 text-center">
-    <p class="text-sm">© 2026 CVPro - Marketplace CV Profesional</p>
+    <p>© 2026 CVPro</p>
   </footer>
 
   <script>
-    // ================== SUPABASE CONFIG ==================
-    const SUPABASE_URL = "https://neuylewfsxcuhayegygf.supabase.co/rest/v1/";     // ← GANTI
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc";                 // ← GANTI
+    const SUPABASE_URL = "https://neuylewfsxcuhayegygf.supabase.co/rest/v1/";     // GANTI
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc";                         // GANTI
 
     const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let allCVs = [];
 
     async function fetchCVs() {
-      const { data, error } = await supabase
-        .from('cvs')
-        .select('*')
-        .order('price', { ascending: true });
+      try {
+        const { data, error } = await supabase
+          .from('cvs')
+          .select('*')
+          .order('price', { ascending: true });
 
-      if (error) {
-        console.error(error);
-        alert("Gagal mengambil data dari Supabase. Cek URL dan API Key Anda.");
-        return;
+        if (error) throw error;
+
+        allCVs = data || [];
+        renderCategories();
+        renderCVs(allCVs);
+      } catch (err) {
+        console.error(err);
+        alert("Gagal mengambil data. Cek Supabase URL dan API Key Anda.");
       }
-
-      allCVs = data || [];
-      renderCategories();
-      renderCVs(allCVs);
     }
 
     function renderCategories() {
       const cats = [...new Set(allCVs.map(cv => cv.category))];
-      const container = document.getElementById('categories');
-      container.innerHTML = cats.map(cat => `
-        <div onclick="filterByCategory('${cat}')" 
-             class="bg-white hover:bg-indigo-50 border border-gray-200 hover:border-indigo-300 p-6 rounded-2xl text-center font-semibold cursor-pointer transition">
+      document.getElementById('categories').innerHTML = cats.map(cat => `
+        <div onclick="filterByCategory('${cat}')" class="bg-white p-6 rounded-2xl text-center font-semibold cursor-pointer hover:bg-indigo-50 border border-gray-200">
           ${cat}
         </div>
       `).join('');
     }
 
     function renderCVs(cvs) {
-      const container = document.getElementById('cvList');
-      container.innerHTML = cvs.map(cv => `
-        <div class="bg-white rounded-3xl overflow-hidden shadow-md card-hover">
-          <img src="${cv.image_url}" class="w-full h-56 object-cover" alt="${cv.title}"/>
+      document.getElementById('cvList').innerHTML = cvs.map(cv => `
+        <div class="bg-white rounded-3xl overflow-hidden shadow hover:shadow-xl transition">
+          <img src="${cv.image_url}" class="w-full h-56 object-cover"/>
           <div class="p-6">
-            <h3 class="font-bold text-xl mb-1">${cv.title}</h3>
-            <p class="text-gray-500 mb-4">${cv.category}</p>
-            <div class="flex justify-between items-center">
-              <span class="text-2xl font-bold text-indigo-600">
-                Rp ${cv.price.toLocaleString('id-ID')}
-              </span>
+            <h3 class="font-bold text-xl">${cv.title}</h3>
+            <p class="text-gray-500">${cv.category}</p>
+            <div class="mt-4 flex justify-between items-center">
+              <span class="text-2xl font-bold text-indigo-600">Rp ${cv.price.toLocaleString('id-ID')}</span>
               <button onclick="buyCV('${cv.whatsapp}', '${cv.title}')" 
-                      class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2 font-medium">
-                <i class="fab fa-whatsapp"></i> Beli via WA
+                      class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl flex items-center gap-2">
+                <i class="fab fa-whatsapp"></i> Beli
               </button>
             </div>
           </div>
@@ -142,17 +121,16 @@
     }
 
     function filterCV() {
-      const searchText = document.getElementById('search').value.toLowerCase().trim();
-      const priceFilter = document.getElementById('priceFilter').value;
+      const search = document.getElementById('search').value.toLowerCase();
+      const priceVal = document.getElementById('priceFilter').value;
 
-      let filtered = allCVs.filter(cv => {
-        const matchSearch = cv.title.toLowerCase().includes(searchText) || 
-                           cv.category.toLowerCase().includes(searchText);
-
+      const filtered = allCVs.filter(cv => {
+        const matchSearch = cv.title.toLowerCase().includes(search) || cv.category.toLowerCase().includes(search);
         let matchPrice = true;
-        if (priceFilter === "100000") matchPrice = cv.price <= 100000;
-        else if (priceFilter === "200000") matchPrice = cv.price > 100000 && cv.price <= 200000;
-        else if (priceFilter === "999999") matchPrice = cv.price > 200000;
+
+        if (priceVal === "100000") matchPrice = cv.price <= 100000;
+        else if (priceVal === "200000") matchPrice = cv.price > 100000 && cv.price <= 200000;
+        else if (priceVal === "999999") matchPrice = cv.price > 200000;
 
         return matchSearch && matchPrice;
       });
@@ -160,20 +138,17 @@
       renderCVs(filtered);
     }
 
-    function filterByCategory(category) {
-      const filtered = allCVs.filter(cv => cv.category === category);
+    function filterByCategory(cat) {
+      const filtered = allCVs.filter(cv => cv.category === cat);
       renderCVs(filtered);
     }
 
-    function buyCV(whatsapp, title) {
-      const text = encodeURIComponent(`Halo Admin, saya ingin membeli:\n*${title}*`);
-      window.open(`https://wa.me/${whatsapp}?text=${text}`, '_blank');
+    function buyCV(wa, title) {
+      const msg = encodeURIComponent(`Halo, saya ingin membeli: ${title}`);
+      window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
     }
 
-    // Initialize
-    window.onload = () => {
-      fetchCVs();
-    };
+    window.onload = fetchCVs;
   </script>
 </body>
 </html>
