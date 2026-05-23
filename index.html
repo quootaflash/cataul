@@ -285,23 +285,25 @@
             background: white; width: 100%; max-width: 900px; border-radius: 20px;
             overflow: hidden; display: flex; flex-direction: column;
             box-shadow: var(--shadow-lg); transform: scale(0.95); transition: 0.3s; position: relative;
+            max-height: 90vh;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
 
-        .modal-body { display: flex; flex-direction: column; overflow-y: auto; max-height: 90vh; }
+        /* --- MODAL STAGE 1: PRODUCT DETAIL --- */
+        .modal-body { display: flex; flex-direction: column; overflow: hidden; height: 100%; }
         
         @media (min-width: 768px) {
-            .modal-body { flex-direction: row; height: 500px; }
+            .modal-body { flex-direction: row; height: 550px; }
             .modal-img-wrapper { width: 55%; }
-            .modal-info { width: 45%; padding: 40px; }
+            .modal-info { width: 45%; }
         }
 
-        /* --- MODAL IMAGE CAROUSEL (SWIPE) --- */
         .modal-img-wrapper {
             position: relative;
             background: #000;
             overflow: hidden;
-            height: 300px; /* Default mobile height */
+            height: 300px; /* Mobile height */
+            flex-shrink: 0;
         }
         @media (min-width: 768px) { .modal-img-wrapper { height: 100%; } }
 
@@ -323,7 +325,7 @@
         .carousel-slide img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Agar gambar tidak terpotong */
+            object-fit: contain;
             background: white;
         }
 
@@ -347,15 +349,17 @@
         }
         .c-dot.active { background: white; transform: scale(1.3); }
         
-        .modal-info { padding: 24px; display: flex; flex-direction: column; }
+        .modal-info { padding: 24px; display: flex; flex-direction: column; overflow-y: auto; height: 100%; }
+        
         .modal-cat { color: var(--primary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .modal-title { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 16px; line-height: 1.3; }
+        .modal-title { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px; line-height: 1.3; flex-shrink: 0; }
         
         .modal-price-wrap {
             display: flex;
             align-items: baseline;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            flex-shrink: 0;
         }
         .modal-price-original {
             font-size: 1rem;
@@ -369,21 +373,30 @@
             color: var(--primary);
         }
 
-        .modal-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; flex: 1; overflow-y: auto; margin-bottom: 24px; }
+        /* Deskripsi Dinamis */
+        .modal-desc { 
+            color: var(--text-muted); 
+            font-size: 0.95rem; 
+            line-height: 1.6; 
+            flex-grow: 1; /* Ini membuat deskripsi memenuhi sisa ruang */
+            overflow-y: auto; 
+            margin-bottom: 16px;
+            white-space: pre-wrap; /* Menjaga format paragraf */
+        }
         
         /* --- ADDON: COVER LETTER SWITCH --- */
         .addon-section {
             background: var(--bg-body);
             padding: 12px;
             border-radius: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border: 1px solid var(--border);
+            flex-shrink: 0;
         }
         .addon-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
         }
         .addon-title {
             font-size: 0.9rem;
@@ -428,7 +441,7 @@
             background: var(--primary); color: white; padding: 16px;
             border-radius: 12px; font-weight: 600; font-size: 1rem; text-align: center;
             transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
-            cursor: pointer;
+            cursor: pointer; flex-shrink: 0;
         }
         .btn-buy:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
 
@@ -436,10 +449,83 @@
             position: absolute; top: 20px; right: 20px;
             background: white; width: 36px; height: 36px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 10; box-shadow: var(--shadow-md);
+            cursor: pointer; z-index: 20; box-shadow: var(--shadow-md);
             color: var(--text-main); transition: 0.2s;
         }
         .btn-close:hover { background: var(--bg-body); }
+
+        /* --- MODAL STAGE 2: PAYMENT DETAIL (Hidden by default) --- */
+        .payment-view {
+            display: none;
+            padding: 30px 24px;
+            height: 100%;
+            overflow-y: auto;
+            flex-direction: column;
+            animation: fadeIn 0.3s ease;
+        }
+        .payment-view.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .payment-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .btn-back {
+            background: none; font-size: 1.2rem; cursor: pointer; color: var(--text-muted); padding: 5px;
+        }
+        .btn-back:hover { color: var(--primary); }
+
+        .summary-card {
+            background: var(--bg-body);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .summary-row {
+            display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted);
+        }
+        .summary-row.total {
+            margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--border);
+            font-weight: 700; color: var(--text-main); font-size: 1.1rem;
+            margin-bottom: 0;
+        }
+
+        .payment-methods {
+            display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;
+        }
+        .bank-card {
+            border: 1px solid var(--border); border-radius: 12px; padding: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: white; transition: 0.2s;
+        }
+        .bank-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+        
+        .bank-info h4 { font-size: 1rem; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .bank-number { font-family: monospace; font-size: 1.1rem; letter-spacing: 1px; color: var(--text-main); font-weight: 600; }
+        .bank-name { font-size: 0.85rem; color: var(--text-muted); }
+
+        .btn-copy {
+            background: var(--bg-body); border: 1px solid var(--border);
+            padding: 8px 12px; border-radius: 8px; cursor: pointer;
+            font-size: 0.8rem; color: var(--primary); display: flex; align-items: center; gap: 6px;
+            transition: 0.2s;
+        }
+        .btn-copy:hover { background: var(--primary-light); border-color: var(--primary); }
+
+        .btn-confirm-wa {
+            background: #25D366; color: white; padding: 16px;
+            border-radius: 12px; font-weight: 600; font-size: 1rem; text-align: center;
+            width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-confirm-wa:hover { background: #1ebc57; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
+        
+        .mt-auto { margin-top: auto; }
 
         /* --- AD POPUP --- */
         .ad-popup {
@@ -458,6 +544,9 @@
 
         footer { border-top: 1px solid var(--border); padding: 30px 0; margin-top: 40px; text-align: center; color: var(--text-muted); font-size: 0.85rem; background: white; }
 
+        /* Hide Scrollbar for modal body but allow scroll */
+        .modal-info::-webkit-scrollbar, .payment-view::-webkit-scrollbar { width: 6px; }
+        .modal-info::-webkit-scrollbar-thumb, .payment-view::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
 </head>
 <body oncontextmenu="return false;">
@@ -524,37 +613,28 @@
         </div>
     </footer>
 
-    <!-- MODAL DETAIL -->
+    <!-- MODAL DETAIL (2 Steps: Product & Payment) -->
     <div class="modal-overlay" id="productModal">
         <div class="modal-content">
             <div class="btn-close" onclick="closeModal()"><i class="fas fa-times"></i></div>
-            <div class="modal-body">
-                
-                <!-- Image Carousel Section -->
+            
+            <!-- STEP 1: PRODUCT VIEW -->
+            <div class="modal-body" id="productView">
                 <div class="modal-img-wrapper" id="modalImgWrapper">
-                    <div class="carousel-track" id="carouselTrack">
-                        <!-- Images injected by JS -->
-                    </div>
-                    
-                    <!-- Nav Controls -->
+                    <div class="carousel-track" id="carouselTrack"></div>
                     <div class="carousel-nav c-prev" onclick="moveCarousel(-1)"><i class="fas fa-chevron-left"></i></div>
                     <div class="carousel-nav c-next" onclick="moveCarousel(1)"><i class="fas fa-chevron-right"></i></div>
-                    
-                    <!-- Dots -->
                     <div class="carousel-dots" id="carouselDots"></div>
                 </div>
 
-                <!-- Info Section -->
                 <div class="modal-info">
                     <div id="m-cat" class="modal-cat">CATEGORY</div>
                     <h2 id="m-title" class="modal-title">Product Title</h2>
                     
-                    <!-- Modal Price Container -->
                     <div class="modal-price-wrap" id="m-price-wrap">
                         <!-- Diisi oleh JS -->
                     </div>
 
-                    <!-- Addon Switch: Surat Lamaran -->
                     <div class="addon-section">
                         <div class="addon-header">
                             <div class="addon-title">
@@ -571,17 +651,61 @@
                         </div>
                     </div>
 
+                    <!-- Deskripsi Dinamis: Flex-grow 1 -->
                     <p id="m-desc" class="modal-desc">Description here...</p>
                     
-                    <div style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted);">
+                    <div style="margin-bottom: 20px; font-size: 0.9rem; color: var(--text-muted); flex-shrink: 0;">
                         <i class="fas fa-check-circle" style="color:var(--primary)"></i> Terpakai <span id="m-sold">0</span>x
                     </div>
 
-                    <button id="m-btn-buy" class="btn-buy">
-                        <i class=""></i>Pakai Sekarang
+                    <button id="btn-goto-payment" class="btn-buy">
+                        <i class="fas fa-shopping-cart"></i> Pakai Sekarang
                     </button>
                 </div>
             </div>
+
+            <!-- STEP 2: PAYMENT VIEW -->
+            <div class="payment-view" id="paymentView">
+                <div class="payment-header">
+                    <button class="btn-back" onclick="backToProduct()"><i class="fas fa-arrow-left"></i></button>
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Detail Pembayaran</h3>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-row">
+                        <span>Produk</span>
+                        <span id="p-product-name" style="font-weight:600; color:var(--text-main);">Nama Produk</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Harga Satuan</span>
+                        <span id="p-unit-price">Rp 0</span>
+                    </div>
+                    <div class="summary-row" id="row-addon" style="display:none;">
+                        <span>Surat Lamaran</span>
+                        <span id="p-addon-price">Rp 0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Bayar</span>
+                        <span id="p-total-price" style="color:var(--primary);">Rp 0</span>
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:12px; font-size:0.9rem; font-weight:600; color:var(--text-muted);">Pilih Metode Pembayaran</h4>
+                <div class="payment-methods" id="paymentMethodsList">
+                    <!-- Rekening akan di-inject JS di sini -->
+                    <div style="text-align:center; color:var(--text-muted); padding:20px;">Memuat rekening...</div>
+                </div>
+
+                <div class="mt-auto">
+                    <p style="font-size:0.8rem; color:var(--text-muted); text-align:center; margin-bottom:12px;">
+                        <i class="fas fa-info-circle"></i> Transfer sesuai total, lalu konfirmasi via WhatsApp
+                    </p>
+                    <button id="btn-confirm-whatsapp" class="btn-confirm-wa">
+                        <i class="fab fa-whatsapp" style="font-size:1.2rem;"></i> Konfirmasi Pembayaran
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -607,10 +731,7 @@
         // --- KONFIGURASI ---
         const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
-        
-        // Nomor admin default (fallback)
         const DEFAULT_ADMIN_WA = '6285885850204';
-        // Harga cover letter default (fallback jika DB gagal)
         const DEFAULT_COVER_PRICE = 15000;
 
         let supabase;
@@ -630,46 +751,46 @@
             { image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgwImJtaEKacdfhKjd_uz23FXmNxhxP789wtpfGSQ8qOh8A7vZu563RPAEso4UGapcxXDYwILQJKGIeTM8qJyDc2dBKDglPKcKuUfvWSAWxBBjo-zLQhKu3TOjmcDRNbZTE9A61dVGBcM8c4Fovtvf2HXW5BXg8chxaas4BbuetPWOJaUJ3cUuz_1MYw5TW/s3264/28633.jpg', link: '#' }
         ];
 
-        // --- DATA DUMMY (Standar Inggris) ---
+        // --- DATA DUMMY ---
         const dummyData = [
-            { id: 1, title: "Modern Creative Portfolio", category: "Creative", price: 50000, original_price: 75000, sold_count: 120, description: "Template dengan layout asimetris yang modern.", image: "https://picsum.photos/seed/clean1/600/600", images: ["https://picsum.photos/seed/clean1/600/600", "https://picsum.photos/seed/clean1b/600/600", "https://picsum.photos/seed/clean1c/600/600"] },
-            { id: 2, title: "Executive Formal Blue", category: "Formal", price: 75000, original_price: null, sold_count: 85, description: "Struktur profesional untuk level manajerial.", image: "https://picsum.photos/seed/clean2/600/600", images: ["https://picsum.photos/seed/clean2/600/600", "https://picsum.photos/seed/clean2b/600/600"] },
-            { id: 3, title: "Developer Dark Mode", category: "Tech", price: 90000, original_price: 120000, sold_count: 200, description: "Tema gelap elegan untuk programmer.", image: "https://picsum.photos/seed/clean3/600/600", images: ["https://picsum.photos/seed/clean3/600/600"] },
-            { id: 4, title: "Clean Minimalist", category: "Simple", price: 35000, original_price: null, sold_count: 500, description: "Fokus pada konten tanpa gangguan visual.", image: "https://picsum.photos/seed/clean4/600/600", images: ["https://picsum.photos/seed/clean4/600/600", "https://picsum.photos/seed/clean4b/600/600", "https://picsum.photos/seed/clean4c/600/600"] }
+            { id: 1, title: "Modern Creative Portfolio", category: "Creative", price: 50000, original_price: 75000, sold_count: 120, description: "Template dengan layout asimetris yang modern. Cocok untuk desainer, arsitek, dan profesional kreatif.\n\nFitur Utama:\n- Format PDF & Word\n- Mudah diedit\n- Font gratis included", image: "https://picsum.photos/seed/clean1/600/600", images: ["https://picsum.photos/seed/clean1/600/600", "https://picsum.photos/seed/clean1b/600/600", "https://picsum.photos/seed/clean1c/600/600"] },
+            { id: 2, title: "Executive Formal Blue", category: "Formal", price: 75000, original_price: null, sold_count: 85, description: "Struktur profesional untuk level manajerial. Memberikan kesan serius dan terpercaya.\n\nWarna biru navy yang elegan.", image: "https://picsum.photos/seed/clean2/600/600", images: ["https://picsum.photos/seed/clean2/600/600", "https://picsum.photos/seed/clean2b/600/600"] },
+            { id: 3, title: "Developer Dark Mode", category: "Tech", price: 90000, original_price: 120000, sold_count: 200, description: "Tema gelap elegan untuk programmer. High contrast untuk keterbacaan maksimal.", image: "https://picsum.photos/seed/clean3/600/600", images: ["https://picsum.photos/seed/clean3/600/600"] },
+            { id: 4, title: "Clean Minimalist", category: "Simple", price: 35000, original_price: null, sold_count: 500, description: "Fokus pada konten tanpa gangguan visual. Pilihan terbaik untuk fresh graduate.", image: "https://picsum.photos/seed/clean4/600/600", images: ["https://picsum.photos/seed/clean4/600/600", "https://picsum.photos/seed/clean4b/600/600", "https://picsum.photos/seed/clean4c/600/600"] }
+        ];
+
+        // --- DATA PEMBAYARAN DUMMY (Jika DB Gagal) ---
+        const dummyPaymentMethods = [
+            { id: 1, bank_name: "BCA", account_number: "1234567890", owner_name: "WriteHub Admin" },
+            { id: 2, bank_name: "DANA", account_number: "08123456789", owner_name: "WriteHub Official" },
+            { id: 3, bank_name: "ShopeePay", account_number: "08123456789", owner_name: "WriteHub Official" }
         ];
 
         let products = [];
         let filteredProducts = [];
         let currentCategory = 'all';
-        
-        // Variabel Harga Cover Letter
         let coverLetterPrice = DEFAULT_COVER_PRICE;
-
-        // Mapping Field
-        let fields = {
-            title: 'title',
-            price: 'price',
-            original_price: 'original_price',
-            image: 'image',
-            images: 'images', // Kolom untuk array gambar swipe
-            category: 'category',
-            description: 'description',
-            sold_count: 'sold_count'
-        };
-
-        // Variabel untuk menyimpan daftar nomor admin dari database
+        let paymentMethods = [];
         let adminNumbersList = [];
 
-        // --- HELPER: Format Rupiah ---
-        const formatRupiah = (num) => {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+        // Mapping Fields
+        let fields = {
+            title: 'title', price: 'price', original_price: 'original_price',
+            image: 'image', images: 'images', category: 'category',
+            description: 'description', sold_count: 'sold_count'
+        };
+
+        // --- HELPERS ---
+        const formatRupiah = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+        
+        function getField(item, fieldKey) {
+            const key = fields[fieldKey];
+            return item[key] || item[fieldKey];
         }
 
-        // --- FUNGSI AUTO MAP COLUMNS ---
         function autoMapColumns(sampleData) {
             if (!sampleData) return;
             const keys = Object.keys(sampleData);
-            
             const map = {
                 title: keys.find(k => k.toLowerCase().includes('nama') || k.toLowerCase().includes('title')) || 'title',
                 price: keys.find(k => k.toLowerCase().includes('harga') || k.toLowerCase().includes('price')) || 'price',
@@ -680,130 +801,54 @@
                 description: keys.find(k => k.toLowerCase().includes('deskripsi') || k.toLowerCase().includes('desc')) || 'description',
                 sold_count: keys.find(k => k.toLowerCase().includes('terjual') || k.toLowerCase().includes('sold')) || 'sold_count'
             };
-
-            console.log("Mapping Kolom Database:", map);
             fields = map;
         }
 
-        // --- FUNGSI AMBIL NOMOR ADMIN ---
+        // --- FETCH FUNCTIONS ---
         async function fetchAdminNumbers() {
             if (useSupabase) {
-                const { data, error } = await supabase.from('no_wa').select('nomor');
-                if (data && data.length > 0) {
-                    adminNumbersList = data.map(item => item.nomor).filter(n => n);
-                    console.log("Admin WA Numbers loaded:", adminNumbersList);
-                } else {
-                    console.warn("Gagal mengambil nomor WA atau tabel kosong.");
-                }
+                const { data } = await supabase.from('no_wa').select('nomor');
+                if (data && data.length > 0) adminNumbersList = data.map(i => i.nomor).filter(n => n);
             }
-            
-            if (adminNumbersList.length === 0) {
-                adminNumbersList = [DEFAULT_ADMIN_WA];
-            }
+            if (adminNumbersList.length === 0) adminNumbersList = [DEFAULT_ADMIN_WA];
         }
 
-        // --- FUNGSI AMBIL HARGA COVER LETTER ---
         async function fetchCoverLetterPrice() {
             if (useSupabase) {
-                // Asumsi tabel bernama 'price_cover_letter' dengan kolom 'price' atau 'harga'
-                const { data, error } = await supabase.from('price_cover_letter').select('price, harga').single();
-                
+                const { data } = await supabase.from('price_cover_letter').select('price, harga').single();
                 if (data) {
-                    // Coba ambil dari kolom 'price' atau 'harga'
-                    const priceVal = data.price || data.harga;
-                    if (priceVal && !isNaN(priceVal)) {
-                        coverLetterPrice = Number(priceVal);
-                        console.log("Cover Letter Price loaded:", coverLetterPrice);
-                    }
-                } else {
-                    console.warn("Gagal ambil harga cover letter, menggunakan default.");
+                    const val = data.price || data.harga;
+                    if (val && !isNaN(val)) coverLetterPrice = Number(val);
                 }
             }
-            // Update text harga di modal (jika modal sedang terbuka nanti)
             updateCoverLetterUI();
         }
 
-        // --- FUNGSI ROTASI ADMIN ---
-        function getRotatedAdminNumber() {
-            let currentIndex = parseInt(localStorage.getItem('wa_admin_index') || '0');
-            const selectedNumber = adminNumbersList[currentIndex];
-            let nextIndex = (currentIndex + 1) % adminNumbersList.length;
-            localStorage.setItem('wa_admin_index', nextIndex.toString());
-            return selectedNumber;
+        async function fetchPaymentMethods() {
+            if (useSupabase) {
+                // Asumsi tabel 'payment' dengan kolom: bank_name, account_number, owner_name
+                const { data, error } = await supabase.from('payment').select('*');
+                if (data && data.length > 0) {
+                    paymentMethods = data;
+                } else {
+                    console.warn("Tabel payment kosong/error, gunakan dummy.");
+                    paymentMethods = dummyPaymentMethods;
+                }
+            } else {
+                paymentMethods = dummyPaymentMethods;
+            }
+            renderPaymentMethods();
         }
 
-        // --- HELPER: AMBIL VALUE SECARA AMAN ---
-        function getField(item, fieldKey) {
-            const key = fields[fieldKey];
-            return item[key] || item[fieldKey];
-        }
-
-        // --- INIT ---
-        async function init() {
-            initSlider();
-            await fetchAdminNumbers(); 
-            await fetchCoverLetterPrice(); // Fetch harga cover letter
-            await fetchProducts();
-            await fetchAd();
-            renderProducts();
-        }
-
-        // --- SLIDER LOGIC (HERO) ---
-        let slideIndex = 0;
-        let slideInterval;
-
-        function initSlider() {
-            const track = document.getElementById('sliderTrack');
-            const dots = document.getElementById('sliderDots');
-            
-            sliderData.forEach((s, i) => {
-                const div = document.createElement('div');
-                div.className = `slide ${i===0?'active':''}`;
-                div.innerHTML = `<a href="${s.link}"><img src="${s.image}" loading="lazy"></a>`;
-                track.appendChild(div);
-
-                const dot = document.createElement('div');
-                dot.className = `dot ${i===0?'active':''}`;
-                dot.onclick = () => goToSlide(i);
-                dots.appendChild(dot);
-            });
-            
-            startSlide();
-            document.getElementById('heroSlider').addEventListener('mouseenter', stopSlide);
-            document.getElementById('heroSlider').addEventListener('mouseleave', startSlide);
-        }
-
-        function goToSlide(n) {
-            const slides = document.querySelectorAll('.slide');
-            const dots = document.querySelectorAll('.dot');
-            slides.forEach(s => s.classList.remove('active'));
-            dots.forEach(d => d.classList.remove('active'));
-            slides[n].classList.add('active');
-            dots[n].classList.add('active');
-            slideIndex = n;
-        }
-
-        function nextSlide() { goToSlide((slideIndex + 1) % sliderData.length); }
-        function prevSlide() { goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); }
-        
-        function startSlide() { slideInterval = setInterval(nextSlide, 5000); }
-        function stopSlide() { clearInterval(slideInterval); }
-        
-        window.nextSlide = nextSlide;
-        window.prevSlide = prevSlide;
-
-        // --- DATA & FETCH ---
         async function fetchProducts() {
             if (useSupabase) {
-                const { data: sample, error: sampleErr } = await supabase.from('cvs').select('*').limit(1);
-                
-                if (!sampleErr && sample && sample.length > 0) {
+                const { data: sample } = await supabase.from('cvs').select('*').limit(1);
+                if (sample && sample.length > 0) {
                     autoMapColumns(sample[0]);
-                    const { data, error } = await supabase.from('cvs').select('*');
+                    const { data } = await supabase.from('cvs').select('*');
                     if (data) products = data;
                     else products = dummyData;
                 } else {
-                    console.warn("Gagal koneksi DB, menggunakan Dummy Data.");
                     products = dummyData;
                 }
             } else {
@@ -823,21 +868,18 @@
             }
         }
 
-        // --- RENDER GRID ---
+        // --- RENDER FUNCTIONS ---
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-            
             if(filteredProducts.length === 0) {
                 grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:20px;">CV tidak ditemukan</p>';
                 return;
             }
-
             filteredProducts.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'cv-card';
                 card.onclick = () => openModal(p);
-                
                 const title = getField(p, 'title');
                 const price = getField(p, 'price');
                 const originalPrice = getField(p, 'original_price');
@@ -847,90 +889,157 @@
 
                 let priceHTML = '';
                 if (originalPrice && Number(originalPrice) > Number(price)) {
-                    priceHTML = `
-                        <div class="price-original">${formatRupiah(originalPrice)}</div>
-                        <div class="price-main">${formatRupiah(price)}</div>
-                    `;
+                    priceHTML = `<div class="price-original">${formatRupiah(originalPrice)}</div><div class="price-main">${formatRupiah(price)}</div>`;
                 } else {
                     priceHTML = `<div class="price-main">${formatRupiah(price)}</div>`;
                 }
-
                 const displayImage = image || 'https://picsum.photos/seed/fallback/600/600';
-
                 card.innerHTML = `
-                    <div class="card-image">
-                        <span class="badge">${category || 'Produk'}</span>
-                        <img src="${displayImage}" loading="lazy" alt="${title}">
-                    </div>
+                    <div class="card-image"><span class="badge">${category || 'Produk'}</span><img src="${displayImage}" loading="lazy" alt="${title}"></div>
                     <div class="card-content">
                         <h3 class="card-title">${title || 'Tanpa Judul'}</h3>
                         <div class="card-footer">
-                            <div class="price-container">
-                                ${priceHTML}
-                            </div>
+                            <div class="price-container">${priceHTML}</div>
                             <div class="sold-info">${soldCount || 0} Terpakai</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
         }
 
-        // --- FILTER LOGIC ---
+        function renderPaymentMethods() {
+            const container = document.getElementById('paymentMethodsList');
+            container.innerHTML = '';
+            
+            paymentMethods.forEach(method => {
+                const div = document.createElement('div');
+                div.className = 'bank-card';
+                // Mapping kolom database (bank_name, account_number, owner_name)
+                // Support Indonesian column names too
+                const bank = method.bank_name || method.nama_bank || 'Bank';
+                const number = method.account_number || method.no_rekening || '---';
+                const owner = method.owner_name || method.atas_nama || '---';
+                const iconClass = getBankIcon(bank);
+
+                div.innerHTML = `
+                    <div class="bank-info">
+                        <h4><i class="${iconClass}" style="color:#333;"></i> ${bank}</h4>
+                        <div class="bank-number">${number}</div>
+                        <div class="bank-name">a.n ${owner}</div>
+                    </div>
+                    <button class="btn-copy" onclick="copyToClipboard('${number}')">
+                        <i class="far fa-copy"></i> Salin
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function getBankIcon(bankName) {
+            const name = bankName.toLowerCase();
+            if (name.includes('bca')) return 'fas fa-university'; // Generic bank icon
+            if (name.includes('mandiri')) return 'fas fa-university';
+            if (name.includes('bni')) return 'fas fa-university';
+            if (name.includes('bri')) return 'fas fa-university';
+            if (name.includes('dana')) return 'fas fa-wallet';
+            if (name.includes('gopay')) return 'fas fa-wallet';
+            if (name.includes('ovo')) return 'fas fa-wallet';
+            if (name.includes('shopee')) return 'fas fa-shopping-bag';
+            return 'fas fa-credit-card';
+        }
+
+        window.copyToClipboard = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Nomor rekening berhasil disalin!');
+            }).catch(err => {
+                console.error('Gagal menyalin', err);
+                // Fallback for older browsers or non-secure contexts
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("Copy");
+                textArea.remove();
+                alert('Nomor rekening berhasil disalin!');
+            });
+        }
+
+        // --- INIT & HERO SLIDER ---
+        let slideIndex = 0;
+        let slideInterval;
+
+        function initSlider() {
+            const track = document.getElementById('sliderTrack');
+            const dots = document.getElementById('sliderDots');
+            sliderData.forEach((s, i) => {
+                const div = document.createElement('div');
+                div.className = `slide ${i===0?'active':''}`;
+                div.innerHTML = `<a href="${s.link}"><img src="${s.image}" loading="lazy"></a>`;
+                track.appendChild(div);
+                const dot = document.createElement('div');
+                dot.className = `dot ${i===0?'active':''}`;
+                dot.onclick = () => goToSlide(i);
+                dots.appendChild(dot);
+            });
+            startSlide();
+            document.getElementById('heroSlider').addEventListener('mouseenter', stopSlide);
+            document.getElementById('heroSlider').addEventListener('mouseleave', startSlide);
+        }
+        function goToSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            slides[n].classList.add('active');
+            dots[n].classList.add('active');
+            slideIndex = n;
+        }
+        function nextSlide() { goToSlide((slideIndex + 1) % sliderData.length); }
+        function prevSlide() { goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); }
+        function startSlide() { slideInterval = setInterval(nextSlide, 5000); }
+        function stopSlide() { clearInterval(slideInterval); }
+        window.nextSlide = nextSlide;
+        window.prevSlide = prevSlide;
+
+        // --- FILTER ---
         window.setCategory = function(cat, el) {
             currentCategory = cat;
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             filterLogic();
         }
-
         function filterLogic() {
             const q = document.getElementById('searchInput').value.toLowerCase();
-            
             filteredProducts = products.filter(p => {
                 const title = (getField(p, 'title') || '').toLowerCase();
                 const category = (getField(p, 'category') || '').toLowerCase();
-                
                 const matchCat = currentCategory === 'all' || category.includes(currentCategory.toLowerCase());
                 const matchText = title.includes(q) || category.includes(q);
                 return matchCat && matchText;
             });
             renderProducts();
         }
-
         document.getElementById('searchInput').addEventListener('input', filterLogic);
 
         /* ----------------------------------------------------
-           MODAL CAROUSEL & COVER LETTER LOGIC
+           MODAL LOGIC (PRODUCT & PAYMENT)
            ---------------------------------------------------- */
-        
         let currentProduct = null;
         let carouselIndex = 0;
         let carouselImages = [];
 
-        // Setup Swipe Touch Events
-        let touchStartX = 0;
-        let touchEndX = 0;
+        // Carousel Swipe
         const trackEl = document.getElementById('carouselTrack');
-
-        trackEl.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-
-        trackEl.addEventListener('touchend', e => {
+        trackEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        trackEl.addEventListener('touchend', e => { 
             touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
+            if (touchEndX < touchStartX - 50) moveCarousel(1);
+            if (touchEndX > touchStartX + 50) moveCarousel(-1);
         }, {passive: true});
-
-        function handleSwipe() {
-            if (touchEndX < touchStartX - 50) moveCarousel(1); // Swipe Left -> Next
-            if (touchEndX > touchStartX + 50) moveCarousel(-1); // Swipe Right -> Prev
-        }
 
         window.moveCarousel = function(direction) {
             const count = carouselImages.length;
             if(count <= 1) return;
-
             carouselIndex = (carouselIndex + direction + count) % count;
             updateCarouselUI();
         }
@@ -938,11 +1047,7 @@
         function updateCarouselUI() {
             const track = document.getElementById('carouselTrack');
             const dotsContainer = document.getElementById('carouselDots');
-            
-            // Move track
             track.style.transform = `translateX(-${carouselIndex * 100}%)`;
-            
-            // Update dots
             dotsContainer.innerHTML = '';
             carouselImages.forEach((_, idx) => {
                 const dot = document.createElement('div');
@@ -952,7 +1057,6 @@
             });
         }
 
-        // Update UI harga saat switch berubah
         const toggleSwitch = document.getElementById('coverLetterToggle');
         toggleSwitch.addEventListener('change', updateModalPriceDisplay);
 
@@ -963,57 +1067,73 @@
 
         function updateModalPriceDisplay() {
             if (!currentProduct) return;
-
             const basePrice = getField(currentProduct, 'price');
             const originalPrice = getField(currentProduct, 'original_price');
             const isAddOn = toggleSwitch.checked;
-            
             const finalPrice = isAddOn ? (Number(basePrice) + coverLetterPrice) : Number(basePrice);
             const priceWrap = document.getElementById('m-price-wrap');
 
-            // Cek diskon
             if (originalPrice && Number(originalPrice) > Number(basePrice)) {
-                // Jika addon aktif, kita bisa menaikkan harga coret juga secara proporsional atau biarkan statis
-                // Di sini kita biarkan harga coret statis (harga asli CV) untuk kesederhanaan, atau bisa disesuaikan
-                priceWrap.innerHTML = `
-                    <div class="modal-price-original">${formatRupiah(originalPrice)}</div>
-                    <div class="modal-price-final">${formatRupiah(finalPrice)}</div>
-                `;
+                priceWrap.innerHTML = `<div class="modal-price-original">${formatRupiah(originalPrice)}</div><div class="modal-price-final">${formatRupiah(finalPrice)}</div>`;
             } else {
                 priceWrap.innerHTML = `<div class="modal-price-final">${formatRupiah(finalPrice)}</div>`;
             }
         }
 
+        // --- NAVIGATION MODAL ---
+        const productView = document.getElementById('productView');
+        const paymentView = document.getElementById('paymentView');
+        const btnGotoPayment = document.getElementById('btn-goto-payment');
+
+        btnGotoPayment.onclick = function() {
+            // Populate Payment Data
+            const basePrice = Number(getField(currentProduct, 'price'));
+            const isAddOn = toggleSwitch.checked;
+            const finalPrice = isAddOn ? (basePrice + coverLetterPrice) : basePrice;
+            
+            document.getElementById('p-product-name').innerText = getField(currentProduct, 'title');
+            document.getElementById('p-unit-price').innerText = formatRupiah(basePrice);
+            
+            const addonRow = document.getElementById('row-addon');
+            if(isAddOn) {
+                addonRow.style.display = 'flex';
+                document.getElementById('p-addon-price').innerText = formatRupiah(coverLetterPrice);
+            } else {
+                addonRow.style.display = 'none';
+            }
+            
+            document.getElementById('p-total-price').innerText = formatRupiah(finalPrice);
+
+            // Switch View
+            productView.style.display = 'none';
+            paymentView.classList.add('active');
+        };
+
+        window.backToProduct = function() {
+            paymentView.classList.remove('active');
+            productView.style.display = 'flex'; // Restore flex for layout
+        };
+
         // --- OPEN MODAL ---
         window.openModal = function(p) {
             currentProduct = p;
-            
-            // Reset State
             carouselIndex = 0;
             toggleSwitch.checked = false;
 
-            // Populate Text Info
-            const title = getField(p, 'title');
-            const category = getField(p, 'category');
-            const description = getField(p, 'description');
-            const soldCount = getField(p, 'sold_count');
+            // Populate Info
+            document.getElementById('m-cat').innerText = getField(p, 'category') || 'CATEGORY';
+            document.getElementById('m-title').innerText = getField(p, 'title') || 'Product Title';
+            document.getElementById('m-desc').innerText = getField(p, 'description') || "Deskripsi tidak tersedia.";
+            document.getElementById('m-sold').innerText = getField(p, 'sold_count') || 0;
 
-            document.getElementById('m-cat').innerText = category || 'CATEGORY';
-            document.getElementById('m-title').innerText = title || 'Product Title';
-            document.getElementById('m-desc').innerText = description || "Deskripsi tidak tersedia.";
-            document.getElementById('m-sold').innerText = soldCount || 0;
-
-            // Setup Carousel Images
+            // Setup Carousel
             const mainImage = getField(p, 'image');
-            const extraImages = getField(p, 'images'); // Harusnya array di DB
-            
-            // Logic jika images null atau bukan array, gunakan gambar utama saja
+            const extraImages = getField(p, 'images');
             if (Array.isArray(extraImages) && extraImages.length > 0) {
                 carouselImages = [mainImage, ...extraImages].filter(img => img);
             } else {
                 carouselImages = [mainImage];
             }
-
             const track = document.getElementById('carouselTrack');
             track.innerHTML = '';
             carouselImages.forEach(imgSrc => {
@@ -1022,54 +1142,17 @@
                 slide.innerHTML = `<img src="${imgSrc || 'https://picsum.photos/seed/modal/800/600'}" alt="Slide">`;
                 track.appendChild(slide);
             });
-
-            // Initialize Carousel UI
             updateCarouselUI();
             
-            // Show/Hide Nav Buttons based on image count
             const navs = document.querySelectorAll('.carousel-nav');
-            if(carouselImages.length > 1) {
-                navs.forEach(n => n.style.display = 'flex');
-            } else {
-                navs.forEach(n => n.style.display = 'none');
-            }
+            if(carouselImages.length > 1) navs.forEach(n => n.style.display = 'flex');
+            else navs.forEach(n => n.style.display = 'none');
 
-            // Update Price & Cover Letter UI
+            // Reset View to Product
+            paymentView.classList.remove('active');
+            productView.style.display = 'flex';
+
             updateCoverLetterUI();
-
-            // --- BUY BUTTON LOGIC ---
-            document.getElementById('m-btn-buy').onclick = () => {
-                const adminNumber = getRotatedAdminNumber();
-                
-                const templateName = title;
-                const isAddOn = toggleSwitch.checked;
-                const currentFinalPrice = isAddOn ? (Number(getField(p, 'price')) + coverLetterPrice) : Number(getField(p, 'price'));
-                const formattedPrice = formatRupiah(currentFinalPrice);
-                
-                const orderTime = new Date().toLocaleString('id-ID', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                let message = `Halo Min, saya ingin membeli CV berikut:
-
-*Jenis CV:* ${templateName}
-*Harga:* ${formattedPrice}
-*Waktu Pesanan:* ${orderTime}`;
-
-                if(isAddOn) {
-                    message += `\n\n*Addon:* Surat Lamaran Kerja (+${formatRupiah(coverLetterPrice)})`;
-                }
-
-                message += `\n\nMohon info pembayaran dan format data untuk pembuatan cv nya..`;
-
-                const waLink = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
-                window.open(waLink, '_blank');
-            };
 
             document.getElementById('productModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1085,8 +1168,55 @@
             if(e.target.id === 'productModal') closeModal();
         });
 
-        window.closeAd = function() {
-            document.getElementById('adPopup').style.display = 'none';
+        // --- CONFIRM WHATSAPP BUTTON ---
+        document.getElementById('btn-confirm-whatsapp').onclick = function() {
+            const basePrice = Number(getField(currentProduct, 'price'));
+            const isAddOn = toggleSwitch.checked;
+            const finalPrice = isAddOn ? (basePrice + coverLetterPrice) : basePrice;
+            const formattedPrice = formatRupiah(finalPrice);
+            
+            const templateName = getField(currentProduct, 'title');
+            const orderTime = new Date().toLocaleString('id-ID', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+
+            let message = `Halo Min, saya ingin membeli CV berikut:
+
+*Jenis CV:* ${templateName}
+*Total Harga:* ${formattedPrice}
+*Waktu Pesanan:* ${orderTime}`;
+
+            if(isAddOn) {
+                message += `\n\n*Addon:* Surat Lamaran Kerja (+${formatRupiah(coverLetterPrice)})`;
+            }
+
+            message += `\n\nSaya sudah transfer. Mohon segera diproses ya Min.`;
+
+            const adminNumber = getRotatedAdminNumber();
+            const waLink = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
+            window.open(waLink, '_blank');
+        }
+
+        function getRotatedAdminNumber() {
+            let currentIndex = parseInt(localStorage.getItem('wa_admin_index') || '0');
+            const selectedNumber = adminNumbersList[currentIndex];
+            let nextIndex = (currentIndex + 1) % adminNumbersList.length;
+            localStorage.setItem('wa_admin_index', nextIndex.toString());
+            return selectedNumber;
+        }
+
+        window.closeAd = function() { document.getElementById('adPopup').style.display = 'none'; }
+
+        // --- MAIN INIT ---
+        async function init() {
+            initSlider();
+            await fetchAdminNumbers(); 
+            await fetchCoverLetterPrice();
+            await fetchPaymentMethods(); // Fetch Rekening
+            await fetchProducts();
+            await fetchAd();
+            renderProducts();
         }
 
         init();
@@ -1099,9 +1229,7 @@
                (e.ctrlKey && e.keyCode == 85)) return false;
         };
         document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '0')) {
-                e.preventDefault();
-            }
+            if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '0')) e.preventDefault();
         });
         document.addEventListener('wheel', function(e) {
             if (e.ctrlKey) e.preventDefault();
