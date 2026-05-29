@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WRITEHUB | CV Profesional Oleh Ahlinya</title>
-    <meta name="description" content="Platform CV profesional terbaik di Indonesia.">
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -38,31 +36,15 @@
             color: var(--text-main); 
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Mencegah horizontal scroll */
             padding-bottom: 80px;
             scroll-behavior: smooth;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
-        a { text-decoration: none; color: inherit; transition: var(--transition); cursor: pointer; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
         img { display: block; max-width: 100%; height: auto; }
         button, input { font-family: inherit; border: none; outline: none; }
         .hidden { display: none !important; }
-        
-        /* View Transition Classes */
-        .view-section {
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            display: none; /* Default hidden */
-        }
-        .view-section.active {
-            display: block;
-            opacity: 1;
-            transform: translateY(0);
-        }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
 
@@ -85,7 +67,7 @@
         }
         .input-field:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--primary-light); }
 
-        /* --- HEADER --- */
+        /* --- HEADER RESPONSIVE --- */
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
@@ -93,14 +75,14 @@
             position: sticky; top: 0; z-index: 100; padding: 12px 0;
         }
         .nav-wrapper { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: var(--text-main); white-space: nowrap; cursor: pointer;}
+        .logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: var(--text-main); white-space: nowrap; }
         .logo img { height: 32px; width: auto; object-fit: contain; } 
 
         .search-box {
             flex: 1;
             position: relative;
             z-index: 1000;
-            min-width: 0;
+            min-width: 0; /* Mencegah overflow flexbox */
         }
 
         .search-box input {
@@ -138,10 +120,12 @@
             overflow-y: auto;
             z-index: 1001;
             padding: 6px 0;
-            width: max-content; 
+            width: max-content; /* Prevent suggestions shrinking too much */
             min-width: 200px;
         }
-        @media (max-width: 640px) { .search-suggestions { width: 100%; min-width: auto; } }
+        @media (max-width: 640px) {
+            .search-suggestions { width: 100%; min-width: auto; }
+        }
 
         .search-suggestions.active { display: flex; animation: slideDownFade 0.2s ease-out; }
         @keyframes slideDownFade { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -154,7 +138,7 @@
         .top-badge { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: white; font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; flex-shrink: 0; }
         .rank-badge { background: #f1f5f9; color: #64748b; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; min-width: 20px; text-align: center; flex-shrink: 0; margin-left: 8px; border: 1px solid #e2e8f0; }
 
-        /* --- HERO SLIDER --- */
+        /* --- HERO SLIDER (PERBAIKAN DISINI) --- */
         .hero-section {
             margin-top: 16px;
             position: relative;
@@ -336,7 +320,7 @@
         @keyframes slideDown { to { opacity: 1; transform: translateY(0); } }
 
         /* --- FOOTER --- */
-        footer { background-color: #ffffff; border-top: 1px solid var(--border); margin-top: auto; padding: 40px 0 30px; color: var(--text-muted); font-size: 0.9rem; position: relative; z-index: 10; }
+        footer { background-color: #ffffff; border-top: 1px solid var(--border); margin-top: 60px; padding: 40px 0 30px; color: var(--text-muted); font-size: 0.9rem; position: relative; z-index: 10; }
         .footer-content { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; }
         .footer-logo { font-weight: 700; font-size: 1.2rem; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .footer-links { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
@@ -350,7 +334,7 @@
         .back-to-top:hover { background-color: var(--primary-dark); transform: translateY(-4px); }
 
         /* ============================================
-           AUTH & RESPONSIVE DASHBOARD STYLES
+           NEW: AUTH & RESPONSIVE DASHBOARD STYLES
            ============================================ */
         .auth-container { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .auth-card { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: var(--shadow-xl); padding: 32px 24px; position: relative; }
@@ -407,7 +391,7 @@
             padding: 24px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border);
-            overflow: hidden; 
+            overflow: hidden; /* Penting untuk rounded corners */
         }
         .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
@@ -450,9 +434,9 @@
 
     <header>
         <div class="container nav-wrapper">
-            <!-- Logo navigasi ke Home -->
-            <a onclick="navigateTo('/')" class="logo">
+            <a href="#home" class="logo">
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjzgVAIKgZMS9W7eJKCaRyaFnoDviThQstfeD9l9mcwPxUDoovGo7xB3RQByxTXo15fGX0DIeTMxOWkVovnB4FC35iJN6ArGLOlBRI9U4d4gJ7VOTOp-Ki47RIaViiIs12QGjxRmGs2cQzCFniRpBE0GyNLW3s_03rvTcpPeHAruMaUdrIKNX8jaFZ1TcBw/s3264/28063.png" alt="Logo">
+                <span>WRITEHUB</span>
             </a>
             
             <div class="search-box">
@@ -463,7 +447,7 @@
             
             <div class="nav-actions" id="navActions">
                 <!-- Dinamis: Masuk / Dashboard -->
-                <a onclick="navigateTo('/auth')" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i></a>
+                <a href="#auth" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i></a>
             </div>
         </div>
     </header>
@@ -471,7 +455,7 @@
     <main class="container">
         
         <!-- VIEW 1: HOME / PRODUCTS -->
-        <div id="home-view" class="view-section active">
+        <div id="home-view">
             <section class="hero-section" id="heroSlider">
                 <div class="slider-container" id="sliderTrack"></div>
                 <button class="slider-btn prev-btn" onclick="window.prevSlide()"><i class="fas fa-chevron-left"></i></button>
@@ -499,7 +483,7 @@
         </div>
 
         <!-- VIEW 2: AUTH PAGE -->
-        <div id="auth-view" class="view-section">
+        <div id="auth-view" class="hidden auth-container">
             <div class="auth-card">
                 <div class="auth-header">
                     <h2 id="authTitle">Masuk Akun</h2>
@@ -529,13 +513,13 @@
                     </button>
                 </form>
                 <div style="margin-top:16px; font-size:0.85rem; color:var(--text-muted); text-align:center;">
-                    <a onclick="navigateTo('/')" style="text-decoration:underline;">Kembali ke Beranda</a>
+                    <a href="#home" style="text-decoration:underline;">Kembali ke Beranda</a>
                 </div>
             </div>
         </div>
 
         <!-- VIEW 3: USER DASHBOARD (RESPONSIVE) -->
-        <div id="user-view" class="view-section">
+        <div id="user-view" class="hidden">
             <div class="dashboard-wrapper">
                 <div class="dashboard-grid">
                     <!-- Profile Section -->
@@ -1149,15 +1133,20 @@
         function initSlider() {
             const track = document.getElementById('sliderTrack');
             const dotsContainer = document.getElementById('sliderDots');
+            
+            // Bersihkan konten sebelumnya (untuk reload atau init ulang)
             track.innerHTML = '';
             dotsContainer.innerHTML = '';
 
+            // Loop data untuk generate Slide dan Dots
             sliderData.forEach((s, i) => {
+                // Generate Slide
                 const div = document.createElement('div');
                 div.className = `slide ${i === 0 ? 'active' : ''}`;
                 div.innerHTML = `<a href="${s.link}"><img src="${s.image}" loading="lazy"></a>`;
                 track.appendChild(div);
 
+                // Generate Dot secara Dinamis
                 const dot = document.createElement('div');
                 dot.className = `dot ${i === 0 ? 'active' : ''}`;
                 dot.onclick = () => goToSlide(i);
@@ -1165,11 +1154,14 @@
             });
 
             startSlide();
+            
+            // Pause saat hover
             document.getElementById('heroSlider').addEventListener('mouseenter', stopSlide);
             document.getElementById('heroSlider').addEventListener('mouseleave', startSlide);
         }
 
         function goToSlide(n) {
+            // Pastikan n valid terhadap jumlah data saat ini
             const slides = document.querySelectorAll('.slide'); 
             const dots = document.querySelectorAll('.dot');
             if (n < 0 || n >= slides.length) return;
@@ -1183,12 +1175,28 @@
             slideIndex = n;
         }
 
-        function nextSlide() { goToSlide((slideIndex + 1) % sliderData.length); }
-        function prevSlide() { goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); }
+        function nextSlide() { 
+            // Menggunakan sliderData.length agar mengikuti data
+            goToSlide((slideIndex + 1) % sliderData.length); 
+        }
         
-        function startSlide() { stopSlide(); slideInterval = setInterval(nextSlide, 5000); }
-        function stopSlide() { if (slideInterval) { clearInterval(slideInterval); slideInterval = null; } }
+        function prevSlide() { 
+            goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); 
+        }
+        
+        function startSlide() { 
+            stopSlide(); 
+            slideInterval = setInterval(nextSlide, 5000); 
+        }
+        
+        function stopSlide() { 
+            if (slideInterval) { 
+                clearInterval(slideInterval); 
+                slideInterval = null; 
+            } 
+        }
 
+        // Expose ke window agar bisa dipanggil onclick di HTML
         window.nextSlide = nextSlide; 
         window.prevSlide = prevSlide;
 
@@ -1328,7 +1336,7 @@
         };
 
         window.openModal = function(p) {
-            if (!currentUser) { showToast('Silakan Login terlebih dahulu.', 'warning'); navigateTo('/auth'); return; }
+            if (!currentUser) { showToast('Silakan Login terlebih dahulu.', 'warning'); window.location.hash = '#auth'; return; }
             clearPaymentTimer();
             currentProduct = p;
             carouselIndex = 0;
@@ -1342,7 +1350,7 @@
 
             const mainImage = getField(p, 'image');
             const extraImages = getField(p, 'images');
-            carouselImages = (Array.isArray(extraImages) && extraImages.length.length > 0) ? [mainImage, ...extraImages].filter(img => img) : [mainImage];
+            carouselImages = (Array.isArray(extraImages) && extraImages.length > 0) ? [mainImage, ...extraImages].filter(img => img) : [mainImage];
             if (carouselImages.length === 0 || !carouselImages[0]) carouselImages = ['https://picsum.photos/seed/nofallback/800/600'];
 
             const track = document.getElementById('carouselTrack');
@@ -1381,89 +1389,6 @@
         }
 
         document.getElementById('productModal').addEventListener('click', (e) => { if(e.target.id === 'productModal') closeModal(); });
-
-        // ============================================
-        // HYBRID ROUTER ENGINE (HASH FALLBACK)
-        // ============================================
-        // Ini memastikan URL bersih (/auth) tapi tetap jalan di semua hosting
-        const routes = {
-            '/': 'home-view',
-            '/auth': 'auth-view',
-            '/user': 'user-view'
-        };
-
-        const hashRoutes = {
-            '': 'home-view',
-            '#home': 'home-view',
-            '#auth': 'auth-view',
-            '#user': 'user-view'
-        };
-
-        window.navigateTo = function(path) {
-            // 1. Update History API agar URL terlihat bersih
-            window.history.pushState({}, path, path);
-            // 2. Pastikan hash ada sebagai fallback jika refresh error
-            if (!window.location.hash) {
-                const fallbackHash = path === '/' ? '' : '#' + path.replace('/', '');
-                // Kita tidak menulis hash ke URL bar karena akan merusak tampilan bersih,
-                // tapi kita simpan state hash untuk handle refresh di non-SPA server.
-                window.location.hash = fallbackHash; 
-            }
-            handleRoute();
-        };
-
-        function handleRoute() {
-            const path = window.location.pathname;
-            const hash = window.location.hash;
-            let targetId = null;
-
-            // Priority 1: Cek Path Clean (misal user menekan tombol "Kembali")
-            if (path === '/auth' || path === '/user') {
-                targetId = routes[path];
-            } 
-            // Priority 2: Cek Hash (Default pertama kali load atau refresh)
-            else if (hash) {
-                const cleanHash = hash.replace('#', '');
-                targetId = hashRoutes[hash] || hashRoutes[cleanHash] || hashRoutes['/' + cleanHash] || 'home-view';
-            } 
-            // Priority 3: Default
-            else {
-                targetId = 'home-view';
-            }
-
-            // Security Check
-            if (targetId === 'user-view' && !currentUser) {
-                navigateTo('/auth');
-                return;
-            }
-            if (targetId === 'auth-view' && currentUser) {
-                navigateTo('/user');
-                return;
-            }
-
-            showView(targetId);
-        }
-
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.remove('active');
-                el.style.display = 'none'; 
-            });
-            const target = document.getElementById(viewId);
-            if(target) {
-                target.style.display = 'block';
-                void target.offsetWidth;
-                target.classList.add('active');
-            }
-            closeModal();
-            window.scrollTo(0,0);
-            updateNavUI();
-        }
-
-        // Listener untuk Back/Forward Button Browser
-        window.addEventListener('popstate', handleRoute);
-        // Listener untuk Manual Hash Change (fallback)
-        window.addEventListener('hashchange', handleRoute);
 
         // ============================================
         // LOGIKA INTI: SIMPAN ORDER & KONFIRMASI WA
@@ -1547,13 +1472,29 @@
         // ============================================
         // AUTH & RESPONSIVE DASHBOARD LOGIC
         // ============================================
-        
+        function handleRoute() {
+            const hash = window.location.hash || '#home';
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('auth-view').classList.add('hidden');
+            document.getElementById('user-view').classList.add('hidden');
+            document.getElementById('productModal').classList.remove('active');
+
+            if (hash === '#auth') {
+                if (currentUser) { window.location.hash = '#user'; } else { document.getElementById('auth-view').classList.remove('hidden'); }
+            } else if (hash === '#user') {
+                if (!currentUser) { window.location.hash = '#auth'; return; }
+                loadDashboard();
+                document.getElementById('user-view').classList.remove('hidden');
+            } else { document.getElementById('home-view').classList.remove('hidden'); }
+            updateNavUI();
+        }
+
+        window.addEventListener('hashchange', handleRoute);
         window.addEventListener('load', async () => {
             await checkSession();
             await fetchProducts();
-            initSlider();
-            // Init Router
             handleRoute();
+            initSlider();
         });
 
         async function checkSession() {
@@ -1565,9 +1506,9 @@
         function updateNavUI() {
             const nav = document.getElementById('navActions');
             if (currentUser) {
-                nav.innerHTML = `<a onclick="navigateTo('/user')" class="btn btn-primary"><i class="fas fa-user"></i></a>`;
+                nav.innerHTML = `<a href="#user" class="btn btn-primary"><i class="fas fa-user"></i></a>`;
             } else {
-                nav.innerHTML = `<a onclick="navigateTo('/auth')" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i></a>`;
+                nav.innerHTML = `<a href="#auth" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i></a>`;
             }
         }
 
@@ -1602,8 +1543,7 @@
                     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                     if (error) throw error;
                     showToast('Login Berhasil!', 'success');
-                    currentUser = data.user;
-                    navigateTo('/user');
+                    window.location.hash = '#user';
                 }
             } catch (err) { showToast(err.message, 'error'); } 
             finally { btn.innerHTML = isRegister ? "Daftar Sekarang" : "Masuk"; }
@@ -1612,7 +1552,7 @@
         window.handleLogout = async () => {
             await supabase.auth.signOut();
             currentUser = null;
-            navigateTo('/');
+            window.location.hash = '#home';
             showToast('Anda telah keluar.', 'success');
         }
 
@@ -1649,6 +1589,7 @@
                 const date = new Date(order.tgl_order).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
                 const formattedPrice = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(order.total_bayar);
                 
+                // Render Desktop Table Row
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${date}</td>
@@ -1659,6 +1600,7 @@
                 `;
                 tbody.appendChild(tr);
 
+                // Render Mobile Card Row
                 const card = document.createElement('div');
                 card.className = 'history-item-card';
                 card.innerHTML = `
