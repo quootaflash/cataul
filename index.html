@@ -36,7 +36,7 @@
             color: var(--text-main); 
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden; /* Mencegah horizontal scroll */
+            overflow-x: hidden; 
             padding-bottom: 80px;
             scroll-behavior: smooth;
         }
@@ -67,6 +67,27 @@
         }
         .input-field:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--primary-light); }
 
+        /* --- GOOGLE BUTTON STYLE --- */
+        .btn-google {
+            background-color: white;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            box-shadow: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            transition: 0.2s;
+        }
+        .btn-google:hover {
+            background-color: #f7f8f8;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+        }
+        .btn-google:active { background-color: #f1f3f4; }
+
         /* --- HEADER RESPONSIVE --- */
         header {
             background: rgba(255, 255, 255, 0.95);
@@ -82,7 +103,7 @@
             flex: 1;
             position: relative;
             z-index: 1000;
-            min-width: 0; /* Mencegah overflow flexbox */
+            min-width: 0; 
         }
 
         .search-box input {
@@ -120,7 +141,7 @@
             overflow-y: auto;
             z-index: 1001;
             padding: 6px 0;
-            width: max-content; /* Prevent suggestions shrinking too much */
+            width: max-content;
             min-width: 200px;
         }
         @media (max-width: 640px) {
@@ -138,7 +159,7 @@
         .top-badge { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: white; font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; flex-shrink: 0; }
         .rank-badge { background: #f1f5f9; color: #64748b; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; min-width: 20px; text-align: center; flex-shrink: 0; margin-left: 8px; border: 1px solid #e2e8f0; }
 
-        /* --- HERO SLIDER (PERBAIKAN DISINI) --- */
+        /* --- HERO SLIDER --- */
         .hero-section {
             margin-top: 16px;
             position: relative;
@@ -333,17 +354,16 @@
         .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .back-to-top:hover { background-color: var(--primary-dark); transform: translateY(-4px); }
 
-        /* ============================================
-           NEW: AUTH & RESPONSIVE DASHBOARD STYLES
-           ============================================ */
+        /* --- AUTH STYLES (GOOGLE ONLY) --- */
         .auth-container { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: var(--shadow-xl); padding: 32px 24px; position: relative; }
-        .auth-header { text-align: center; margin-bottom: 24px; }
+        .auth-card { background: white; width: 100%; max-width: 400px; border-radius: 20px; box-shadow: var(--shadow-xl); padding: 40px 24px; text-align: center; }
+        .auth-header { margin-bottom: 32px; }
         .auth-header h2 { font-size: 1.5rem; color: var(--text-main); margin-bottom: 8px; }
-        .auth-header p { font-size: 0.9rem; color: var(--text-muted); }
-        .auth-toggle { display: flex; background: var(--bg-body); padding: 4px; border-radius: 8px; margin-bottom: 24px; }
-        .toggle-btn { flex: 1; padding: 8px; text-align: center; font-size: 0.9rem; font-weight: 600; border-radius: 6px; cursor: pointer; transition: 0.2s; color: var(--text-muted); }
-        .toggle-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .auth-header p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
+        .auth-divider { margin: 24px 0; color: var(--text-muted); font-size: 0.85rem; position: relative; }
+        .auth-divider::before, .auth-divider::after { content: ""; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
+        .auth-divider::before { left: 0; }
+        .auth-divider::after { right: 0; }
 
         /* --- RESPONSIVE DASHBOARD --- */
         .dashboard-wrapper {
@@ -391,7 +411,7 @@
             padding: 24px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border);
-            overflow: hidden; /* Penting untuk rounded corners */
+            overflow: hidden; 
         }
         .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
@@ -482,37 +502,27 @@
             </div>
         </div>
 
-        <!-- VIEW 2: AUTH PAGE -->
+        <!-- VIEW 2: AUTH PAGE (GOOGLE ONLY) -->
         <div id="auth-view" class="hidden auth-container">
             <div class="auth-card">
                 <div class="auth-header">
-                    <h2 id="authTitle">Masuk Akun</h2>
-                    <p>Selamat datang kembali di WriteHub</p>
-                </div>
-                
-                <div class="auth-toggle">
-                    <div class="toggle-btn active" onclick="switchAuthMode('login')">Masuk</div>
-                    <div class="toggle-btn" onclick="switchAuthMode('register')">Daftar</div>
+                    <h2>Selamat Datang</h2>
+                    <p>Masuk untuk mengakses riwayat transaksi dan pembelian template CV Anda.</p>
                 </div>
 
-                <form id="authForm" onsubmit="handleAuth(event)">
-                    <div class="input-group" id="nameGroup" style="display:none;">
-                        <label>Nama Lengkap</label>
-                        <input type="text" id="authName" class="input-field" placeholder="John Doe">
-                    </div>
-                    <div class="input-group">
-                        <label>Email</label>
-                        <input type="email" id="authEmail" class="input-field" placeholder="nama@email.com" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Password</label>
-                        <input type="password" id="authPassword" class="input-field" placeholder="•••••••••" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;" id="authSubmitBtn">
-                        Masuk
-                    </button>
-                </form>
-                <div style="margin-top:16px; font-size:0.85rem; color:var(--text-muted); text-align:center;">
+                <!-- Google Sign In Button -->
+                <button class="btn btn-google" onclick="window.handleGoogleSignIn()">
+                    <i class="fab fa-google" style="color: #DB4437;"></i> 
+                    Lanjutkan dengan Google
+                </button>
+
+                <div class="auth-divider">atau</div>
+
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+                    Dengan masuk, Anda menyetujui Syarat & Ketentuan kami.
+                </p>
+
+                <div style="margin-top:16px; font-size:0.85rem; color:var(--text-muted);">
                     <a href="#home" style="text-decoration:underline;">Kembali ke Beranda</a>
                 </div>
             </div>
@@ -1134,19 +1144,15 @@
             const track = document.getElementById('sliderTrack');
             const dotsContainer = document.getElementById('sliderDots');
             
-            // Bersihkan konten sebelumnya (untuk reload atau init ulang)
             track.innerHTML = '';
             dotsContainer.innerHTML = '';
 
-            // Loop data untuk generate Slide dan Dots
             sliderData.forEach((s, i) => {
-                // Generate Slide
                 const div = document.createElement('div');
                 div.className = `slide ${i === 0 ? 'active' : ''}`;
                 div.innerHTML = `<a href="${s.link}"><img src="${s.image}" loading="lazy"></a>`;
                 track.appendChild(div);
 
-                // Generate Dot secara Dinamis
                 const dot = document.createElement('div');
                 dot.className = `dot ${i === 0 ? 'active' : ''}`;
                 dot.onclick = () => goToSlide(i);
@@ -1155,13 +1161,11 @@
 
             startSlide();
             
-            // Pause saat hover
             document.getElementById('heroSlider').addEventListener('mouseenter', stopSlide);
             document.getElementById('heroSlider').addEventListener('mouseleave', startSlide);
         }
 
         function goToSlide(n) {
-            // Pastikan n valid terhadap jumlah data saat ini
             const slides = document.querySelectorAll('.slide'); 
             const dots = document.querySelectorAll('.dot');
             if (n < 0 || n >= slides.length) return;
@@ -1175,28 +1179,12 @@
             slideIndex = n;
         }
 
-        function nextSlide() { 
-            // Menggunakan sliderData.length agar mengikuti data
-            goToSlide((slideIndex + 1) % sliderData.length); 
-        }
+        function nextSlide() { goToSlide((slideIndex + 1) % sliderData.length); }
+        function prevSlide() { goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); }
         
-        function prevSlide() { 
-            goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); 
-        }
-        
-        function startSlide() { 
-            stopSlide(); 
-            slideInterval = setInterval(nextSlide, 5000); 
-        }
-        
-        function stopSlide() { 
-            if (slideInterval) { 
-                clearInterval(slideInterval); 
-                slideInterval = null; 
-            } 
-        }
+        function startSlide() { stopSlide(); slideInterval = setInterval(nextSlide, 5000); }
+        function stopSlide() { if (slideInterval) { clearInterval(slideInterval); slideInterval = null; } }
 
-        // Expose ke window agar bisa dipanggil onclick di HTML
         window.nextSlide = nextSlide; 
         window.prevSlide = prevSlide;
 
@@ -1435,6 +1423,10 @@
 
             if (dbResult.error) {
                 showToast('Terjadi kesalahan sistem. Pesanan gagal tersimpan.', 'error');
+                isOrderProcessing = false;
+                btn.disabled = false;
+                btn.classList.remove('locked');
+                btn.innerHTML = `<i class="fas fa-check-circle"></i> Coba Lagi`;
                 return; 
             }
 
@@ -1470,8 +1462,28 @@
         }
 
         // ============================================
-        // AUTH & RESPONSIVE DASHBOARD LOGIC
+        // AUTH LOGIC (GOOGLE OAUTH)
         // ============================================
+        
+        // Fungsi Sign In Google
+        window.handleGoogleSignIn = async function() {
+            if (!useSupabase) {
+                showToast('Supabase belum terkonfigurasi.', 'error');
+                return;
+            }
+            try {
+                const { data, error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin + window.location.pathname
+                    }
+                });
+                if (error) throw error;
+            } catch (err) {
+                showToast('Gagal masuk dengan Google: ' + err.message, 'error');
+            }
+        };
+
         function handleRoute() {
             const hash = window.location.hash || '#home';
             document.getElementById('home-view').classList.add('hidden');
@@ -1512,43 +1524,6 @@
             }
         }
 
-        window.switchAuthMode = (mode) => {
-            const title = document.getElementById('authTitle');
-            const btn = document.getElementById('authSubmitBtn');
-            const nameGroup = document.getElementById('nameGroup');
-            if (mode === 'register') {
-                title.innerText = "Daftar Akun Baru"; btn.innerText = "Daftar Sekarang"; nameGroup.style.display = 'block';
-            } else {
-                title.innerText = "Masuk Akun"; btn.innerText = "Masuk"; nameGroup.style.display = 'none';
-            }
-        }
-
-        window.handleAuth = async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('authEmail').value;
-            const password = document.getElementById('authPassword').value;
-            const name = document.getElementById('authName').value;
-            const btn = document.getElementById('authSubmitBtn');
-            const isRegister = document.getElementById('nameGroup').style.display !== 'none';
-
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Memproses...`;
-
-            try {
-                if (isRegister) {
-                    const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
-                    if (error) throw error;
-                    showToast('Pendaftaran berhasil! Silakan Masuk.', 'success');
-                    switchAuthMode('login');
-                } else {
-                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    showToast('Login Berhasil!', 'success');
-                    window.location.hash = '#user';
-                }
-            } catch (err) { showToast(err.message, 'error'); } 
-            finally { btn.innerHTML = isRegister ? "Daftar Sekarang" : "Masuk"; }
-        }
-
         window.handleLogout = async () => {
             await supabase.auth.signOut();
             currentUser = null;
@@ -1559,8 +1534,8 @@
         async function loadDashboard() {
             if (!currentUser) return;
             const metadata = currentUser.user_metadata || {};
-            document.getElementById('dashAvatar').innerText = (metadata.full_name || currentUser.email)[0].toUpperCase();
-            document.getElementById('dashName').innerText = metadata.full_name || "Pengguna";
+            document.getElementById('dashAvatar').innerText = (metadata.full_name || metadata.name || currentUser.email)[0].toUpperCase();
+            document.getElementById('dashName').innerText = metadata.full_name || metadata.name || "Pengguna";
             document.getElementById('dashEmail').innerText = currentUser.email;
 
             const tbody = document.getElementById('historyBody');
