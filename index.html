@@ -41,16 +41,16 @@
             scroll-behavior: smooth;
         }
 
-        a { text-decoration: none; color: inherit; transition: var(--transition); cursor: pointer; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
         img { display: block; max-width: 100%; height: auto; }
         button, input { font-family: inherit; border: none; outline: none; }
         .hidden { display: none !important; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; width: 100%; }
 
-        /* --- BUTTONS --- */
+        /* --- BUTTONS & INPUTS --- */
         .btn {
-            padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem;
+            padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem;
             white-space: nowrap;
         }
         .btn-primary { background: var(--primary); color: white; }
@@ -58,10 +58,16 @@
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-text { background: transparent; color: var(--text-muted); padding: 8px 0; font-size: 0.9rem; }
-        .btn-text:hover { color: var(--primary); text-decoration: underline; }
+        
+        .input-group { margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
+        .input-field {
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--bg-body); transition: 0.2s; font-size: 0.95rem;
+        }
+        .input-field:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--primary-light); }
 
-        /* --- PROFESSIONAL GOOGLE BUTTON --- */
+        /* --- GOOGLE BUTTON STYLE --- */
         .btn-google-pro {
             background-color: #fff;
             color: #3c4043;
@@ -91,7 +97,6 @@
             cursor: not-allowed;
             box-shadow: none;
         }
-        /* Google Logo SVG styling */
         .google-icon { width: 20px; height: 20px; }
 
         /* --- HEADER RESPONSIVE --- */
@@ -360,13 +365,12 @@
         .back-to-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
         .back-to-top:hover { background-color: var(--primary-dark); transform: translateY(-4px); }
 
-        /* --- AUTH STYLES (PROFESSIONAL) --- */
+        /* --- AUTH STYLES (GOOGLE ONLY) --- */
         .auth-container { min-height: 70vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at top right, #eff6ff, transparent 40%); }
         .auth-card { background: white; width: 100%; max-width: 420px; border-radius: 24px; box-shadow: var(--shadow-xl); padding: 48px 32px; text-align: center; border: 1px solid rgba(255,255,255,0.5); }
         .auth-header { margin-bottom: 32px; }
         .auth-header h2 { font-size: 1.75rem; color: var(--text-main); margin-bottom: 12px; letter-spacing: -0.5px; }
         .auth-header p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; }
-        
         .auth-terms { margin-top: 24px; font-size: 0.8rem; color: var(--text-muted); }
         .auth-terms a { color: var(--primary); text-decoration: underline; }
 
@@ -507,13 +511,13 @@
             </div>
         </div>
 
-        <!-- VIEW 2: AUTH PAGE (GOOGLE ONLY) -->
+        <!-- VIEW 2: AUTH PAGE (FIREBASE GOOGLE) -->
         <div id="auth-view" class="hidden">
             <div class="auth-container">
                 <div class="auth-card">
                     <div class="auth-header">
                         <h2>Selamat Datang</h2>
-                        <p>Masuk untuk mengakses riwayat transaksi dan pembelian template CV premium Anda.</p>
+                        <p>Masuk untuk mengakses riwayat transaksi dan pembelian template CV Anda.</p>
                     </div>
 
                     <!-- Professional Google Button with SVG -->
@@ -728,28 +732,61 @@
     </div>
 
     <script type="module">
+        // ============================================
+        // FIREBASE & SUPABASE IMPORTS
+        // ============================================
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-        // --- KONFIGURASI ---
+        // ============================================
+        // CONFIGURASI (WAJIB DIISI)
+        // ============================================
+        
+        // --- FIREBASE CONFIG (Ganti dengan config dari Firebase Console Anda) ---
+        const firebaseConfig = {
+            apiKey: "ISI_API_KEY_ANDA_DISINI",
+            authDomain: "project-id.firebaseapp.com",
+            projectId: "project-id",
+            storageBucket: "project-id.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        // --- SUPABASE CONFIG (Untuk Database Produk & Order) ---
         const SUPABASE_URL = 'https://neuylewfsxcuhayegygf.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ldXlsZXdmc3hjdWhheWVneWdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTMzNzYsImV4cCI6MjA5NDkyOTM3Nn0.Ra0qI5A87XxODy7v9HIJ-zxqVbO39GwXbJlV8n4ZeIc';
-        const DEFAULT_ADMIN_WA = '#';
-        const DEFAULT_COVER_PRICE = 15000;
+        
+        // ============================================
+        // INISIALISASI
+        // ============================================
+        let auth, app;
+        let useFirebase = false;
+
+        try {
+            if (firebaseConfig.apiKey !== "ISI_API_KEY_ANDA_DISINI") {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                useFirebase = true;
+                console.log('%c[SYSTEM] Firebase Auth Initialized', 'color: orange; font-weight: bold;');
+            } else {
+                console.error('%c[SYSTEM] Firebase Config missing!', 'color: red; font-weight: bold;');
+                alert("Harap isi konfigurasi Firebase di dalam kode HTML!");
+            }
+        } catch (e) {
+            console.error(e);
+        }
 
         let supabase;
         let useSupabase = false;
-
         if (SUPABASE_URL.length > 10 && SUPABASE_ANON_KEY.length > 10) {
-            try {
-                supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                useSupabase = true;
-                console.log('%c[SYSTEM] Database Connected', 'color: green; font-weight: bold;');
-            } catch(e) {
-                console.error('%c[SYSTEM] Database Connection Failed', 'color: red; font-weight: bold;');
-            }
-        } else {
-            console.warn('%c[SYSTEM] Supabase Keys missing.', 'color: orange; font-weight: bold;');
+            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            useSupabase = true;
+            console.log('%c[SYSTEM] Supabase Database Connected', 'color: green; font-weight: bold;');
         }
+
+        const DEFAULT_ADMIN_WA = '#';
+        const DEFAULT_COVER_PRICE = 15000;
 
         // --- DATA SLIDER ---
         const sliderData = [
@@ -771,7 +808,7 @@
         let touchStartX = 0;
         let touchEndX = 0;
         let isOrderProcessing = false;
-        let currentUser = null;
+        let currentUser = null; // Firebase User Object
 
         const AD_CONFIG = { tableNames: ['iklan', 'ads', 'ad', 'iklan_banner', 'banner'], };
         let modalAdsCache = [];
@@ -915,7 +952,7 @@
             });
         }
 
-        // --- FETCH FUNCTIONS ---
+        // --- FETCH FUNCTIONS (SUPABASE DB) ---
         async function fetchAdminNumbers() {
             if (useSupabase) {
                 const { data } = await supabase.from('no_wa').select('nomor');
@@ -1415,6 +1452,7 @@
             const customAddonPrice = Number(getField(currentProduct, 'cover_letter_price')) || 0;
             const finalAddonPrice = (customAddonPrice > 0) ? customAddonPrice : coverLetterPrice;
             
+            // CRITICAL: Menggunakan Firebase UID (currentUser.uid) sebagai user_id
             const orderData = {
                 id: currentOrderId,
                 jenis_produk: templateName,
@@ -1423,7 +1461,7 @@
                 harga_addon: isAddOn ? finalAddonPrice : 0,
                 total_bayar: currentUniqueTotal,
                 status: 'Paid',
-                user_id: currentUser.id
+                user_id: currentUser.uid // Menggunakan Firebase UID
             };
 
             const dbResult = await saveOrderToDatabase(orderData);
@@ -1469,7 +1507,7 @@
         }
 
         // ============================================
-        // ROUTING & AUTH (NO HASH)
+        // ROUTING & AUTH (FIREBASE)
         // ============================================
         const app = {
             // Fungsi Navigasi Utama
@@ -1481,25 +1519,21 @@
                     return;
                 }
 
-                // Sembunyikan semua view
                 const views = ['home-view', 'auth-view', 'user-view'];
                 views.forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.classList.add('hidden');
                 });
 
-                // Tampilkan view tujuan
                 const target = document.getElementById(viewName + '-view');
                 if (target) {
                     target.classList.remove('hidden');
                     window.scrollTo(0, 0);
                 }
 
-                // Update UI Navigasi
                 this.updateNavUI();
             },
 
-            // Update Button di Header
             updateNavUI: function() {
                 const nav = document.getElementById('navActions');
                 if (currentUser) {
@@ -1509,58 +1543,69 @@
                 }
             },
 
-            // Fungsi Login Google dengan Loading State
+            // Fungsi Login Firebase dengan Loading State
             handleGoogleSignIn: async function() {
-                if (!useSupabase) {
-                    showToast('Sistem belum siap.', 'error');
+                if (!useFirebase) {
+                    showToast('Firebase belum dikonfigurasi.', 'error');
                     return;
                 }
                 
                 const btn = document.getElementById('googleSignInBtn');
                 const originalContent = btn.innerHTML;
                 
-                // Ubah tombol ke state loading
                 btn.disabled = true;
                 btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> Menghubungkan...`;
 
                 try {
-                    const { error } = await supabase.auth.signInWithOAuth({
-                        provider: 'google',
-                        options: {
-                            redirectTo: window.location.origin + window.location.pathname
-                        }
-                    });
-                    if (error) throw error;
+                    const provider = new GoogleAuthProvider();
+                    provider.addScope('profile');
+                    provider.addScope('email');
+                    
+                    // Gunakan signInWithPopup untuk SPA feel
+                    const result = await signInWithPopup(auth, provider);
+                    // Sukses ditangani oleh onAuthStateChanged
                 } catch (err) {
                     console.error(err);
                     showToast('Gagal masuk dengan Google.', 'error');
-                    // Kembalikan tombol ke normal jika error
                     btn.disabled = false;
                     btn.innerHTML = originalContent;
                 }
             },
 
-            // Logout
             handleLogout: async function() {
-                await supabase.auth.signOut();
+                await signOut(auth);
                 currentUser = null;
                 showToast('Anda telah keluar.', 'success');
                 this.switchView('home');
             }
         };
 
-        // Expose app to window for HTML onclick handlers
         window.app = app;
+
+        // Listener Auth State Firebase
+        if (useFirebase) {
+            onAuthStateChanged(auth, (user) => {
+                currentUser = user; // user berisi Firebase User Object
+                app.updateNavUI();
+                
+                // Jika sedang di dashboard tapi logout, pindah ke home
+                const userView = document.getElementById('user-view');
+                if (!user && !userView.classList.contains('hidden')) {
+                    app.switchView('home');
+                }
+
+                // Jika sedang di auth tapi login, pindah ke user
+                const authView = document.getElementById('auth-view');
+                if (user && !authView.classList.contains('hidden')) {
+                    app.switchView('user');
+                }
+            });
+        }
 
         // Inisialisasi Saat Load
         window.addEventListener('load', async () => {
             console.log('%c[WRITEHUB] Initializing...', 'color: blue; font-weight: bold;');
             
-            // Cek Session
-            const { data: { session } } = await supabase.auth.getSession();
-            currentUser = session?.user || null;
-
-            // Load Data
             initSlider();
             if (useSupabase) {
                 const ads = await fetchAds();
@@ -1577,7 +1622,7 @@
             await fetchProducts();
             renderProducts();
 
-            // Default View: jika sudah login ke dashboard, kalau tidak ke home
+            // Default View
             if (currentUser) {
                 app.switchView('user');
             } else {
