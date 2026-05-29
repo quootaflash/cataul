@@ -143,7 +143,6 @@
             margin-top: 16px;
             position: relative;
             width: 100%;
-            /* Diubah dari 16/9 menjadi 1280/500 sesuai request */
             aspect-ratio: 1280 / 500; 
             max-width: 1200px;
             margin-left: auto;
@@ -1128,37 +1127,78 @@
             navigator.clipboard.writeText(sanitized).then(() => showToast(`Nomor ${sanitized} berhasil disalin!`, 'success'));
         };
 
-        // --- HERO SLIDER ---
+        // --- HERO SLIDER (FIXED) ---
         let slideIndex = 0, slideInterval;
+        
         function initSlider() {
             const track = document.getElementById('sliderTrack');
-            const dots = document.getElementById('sliderDots');
+            const dotsContainer = document.getElementById('sliderDots');
+            
+            // Bersihkan konten sebelumnya (untuk reload atau init ulang)
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            // Loop data untuk generate Slide dan Dots
             sliderData.forEach((s, i) => {
+                // Generate Slide
                 const div = document.createElement('div');
-                div.className = `slide ${i===0?'active':''}`;
+                div.className = `slide ${i === 0 ? 'active' : ''}`;
                 div.innerHTML = `<a href="${s.link}"><img src="${s.image}" loading="lazy"></a>`;
                 track.appendChild(div);
+
+                // Generate Dot secara Dinamis
                 const dot = document.createElement('div');
-                dot.className = `dot ${i===0?'active':''}`;
+                dot.className = `dot ${i === 0 ? 'active' : ''}`;
                 dot.onclick = () => goToSlide(i);
-                dots.appendChild(dot);
+                dotsContainer.appendChild(dot);
             });
+
             startSlide();
+            
+            // Pause saat hover
             document.getElementById('heroSlider').addEventListener('mouseenter', stopSlide);
             document.getElementById('heroSlider').addEventListener('mouseleave', startSlide);
         }
+
         function goToSlide(n) {
-            const slides = document.querySelectorAll('.slide'); const dots = document.querySelectorAll('.dot');
+            // Pastikan n valid terhadap jumlah data saat ini
+            const slides = document.querySelectorAll('.slide'); 
+            const dots = document.querySelectorAll('.dot');
             if (n < 0 || n >= slides.length) return;
-            slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active'));
-            slides[n].classList.add('active'); dots[n].classList.add('active');
+            
+            slides.forEach(s => s.classList.remove('active')); 
+            dots.forEach(d => d.classList.remove('active'));
+            
+            slides[n].classList.add('active'); 
+            dots[n].classList.add('active');
+            
             slideIndex = n;
         }
-        function nextSlide() { goToSlide((slideIndex + 1) % sliderData.length); }
-        function prevSlide() { goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); }
-        function startSlide() { stopSlide(); slideInterval = setInterval(nextSlide, 5000); }
-        function stopSlide() { if (slideInterval) { clearInterval(slideInterval); slideInterval = null; } }
-        window.nextSlide = nextSlide; window.prevSlide = prevSlide;
+
+        function nextSlide() { 
+            // Menggunakan sliderData.length agar mengikuti data
+            goToSlide((slideIndex + 1) % sliderData.length); 
+        }
+        
+        function prevSlide() { 
+            goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); 
+        }
+        
+        function startSlide() { 
+            stopSlide(); 
+            slideInterval = setInterval(nextSlide, 5000); 
+        }
+        
+        function stopSlide() { 
+            if (slideInterval) { 
+                clearInterval(slideInterval); 
+                slideInterval = null; 
+            } 
+        }
+
+        // Expose ke window agar bisa dipanggil onclick di HTML
+        window.nextSlide = nextSlide; 
+        window.prevSlide = prevSlide;
 
         // --- FILTER ---
         window.setCategory = function(cat, el) {
