@@ -1479,9 +1479,9 @@
             document.getElementById('user-view').classList.add('hidden');
             document.getElementById('productModal').classList.remove('active');
 
-            if (hash === '#auth') {
+            if (hash === 'auth') {
                 if (currentUser) { window.location.hash = '#user'; } else { document.getElementById('auth-view').classList.remove('hidden'); }
-            } else if (hash === '#user') {
+            } else if (hash === 'user') {
                 if (!currentUser) { window.location.hash = '#auth'; return; }
                 loadDashboard();
                 document.getElementById('user-view').classList.remove('hidden');
@@ -1506,9 +1506,9 @@
         function updateNavUI() {
             const nav = document.getElementById('navActions');
             if (currentUser) {
-                nav.innerHTML = `<a href="#user" class="btn btn-primary"><i class="fas fa-user"></i></a>`;
+                nav.innerHTML = `<a href="user" class="btn btn-primary"><i class="fas fa-user"></i></a>`;
             } else {
-                nav.innerHTML = `<a href="#auth" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i></a>`;
+                nav.innerHTML = `<a href="auth" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i></a>`;
             }
         }
 
