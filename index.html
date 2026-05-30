@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -185,6 +185,34 @@
             font-size: 0.85rem;
             color: var(--text-muted);
             text-align: center;
+        }
+
+        /* --- USER ICON BUTTON (NEW) --- */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+            background: transparent;
+            padding: 4px;
+            border-radius: 50%;
+        }
+
+        .user-icon-btn:hover {
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .user-icon-btn.logged-in {
+            color: var(--primary);
+            background-color: var(--primary-light);
         }
 
         /* --- HERO SLIDER --- */
@@ -807,6 +835,13 @@
                 <input type="text" id="searchInput" placeholder="Cari CV..." autocomplete="off">
                 <div class="search-suggestions" id="searchSuggestions"></div>
             </div>
+
+            <!-- USER ICON BUTTON (NEW) -->
+            <div class="nav-actions">
+                <a href="https://auth.writehub.my.id" id="navUserLink" class="user-icon-btn" title="Akun Saya">
+                    <i class="fas fa-user-circle"></i>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -996,6 +1031,7 @@
 
         let supabase;
         let useSupabase = false;
+        let currentUser = null; // Menyimpan state login user
 
         if (SUPABASE_URL.length > 10 && SUPABASE_ANON_KEY.length > 10) {
             try {
@@ -1703,6 +1739,15 @@
         const paymentView = document.getElementById('paymentView');
 
         document.getElementById('btn-goto-payment').onclick = function() {
+            // --- CEK LOGIN (FITUR BARU) ---
+            if (!currentUser) {
+                showToast('Silakan Login terlebih dahulu untuk melanjutkan pembelian.', 'warning');
+                setTimeout(() => {
+                    window.location.href = "https://auth.writehub.my.id";
+                }, 1000);
+                return;
+            }
+
             if (!currentProduct) return;
             
             const basePrice = Number(getField(currentProduct, 'price')) || 0;
@@ -1870,7 +1915,6 @@
             const finalAddonPrice = (customAddonPrice > 0) ? customAddonPrice : coverLetterPrice;
             
             // 2. Siapkan Data untuk Database
-            // CATATAN: Kita HAPUS 'tgl_order' dari payload agar DB handle default now()
             const orderData = {
                 id: currentOrderId,
                 jenis_produk: templateName,
@@ -1878,7 +1922,8 @@
                 has_addon: isAddOn,
                 harga_addon: isAddOn ? finalAddonPrice : 0,
                 total_bayar: currentUniqueTotal,
-                status: 'Paid' 
+                status: 'Paid',
+                user_id: currentUser.id // <--- PENTING: LINK KE USER (AUTH)
             };
 
             // 3. Simpan ke Database
@@ -1939,6 +1984,36 @@
             return selectedNumber || DEFAULT_ADMIN_WA;
         }
 
+        // ============================================
+        // AUTH & NAVBAR LOGIC (NEW)
+        // ============================================
+        
+        async function checkSession() {
+            if (!useSupabase) return;
+            const { data: { session } } = await supabase.auth.getSession();
+            currentUser = session?.user || null;
+            updateNavIcon();
+        }
+
+        function updateNavIcon() {
+            const btn = document.getElementById('navUserLink');
+            if (!btn) return;
+
+            if (currentUser) {
+                // User Sudah Login
+                btn.classList.add('logged-in');
+                btn.innerHTML = `<i class="fas fa-user-check"></i>`;
+                btn.href = "https://auth.writehub.my.id"; // Link ke Dashboard
+                btn.title = "Menu Dashboard";
+            } else {
+                // User Belum Login
+                btn.classList.remove('logged-in');
+                btn.innerHTML = `<i class="fas fa-user-circle"></i>`;
+                btn.href = "https://auth.writehub.my.id"; // Link ke Halaman Login/Register
+                btn.title = "Masuk / Daftar";
+            }
+        }
+
         // --- INIT ---
         async function init() {
             console.log('%c[WRITEHUB] Initializing...', 'color: blue; font-weight: bold;');
@@ -1953,6 +2028,9 @@
                     return p.includes('modal') || p.includes('product') || p.includes('produk') || p.includes('detail') || p.includes('inside');
                 });
                 console.log(`[AD SYSTEM] Prepared ${modalAdsCache.length} modal ads.`);
+                
+                // Cek Session saat init
+                await checkSession();
             }
             
             await fetchAdminNumbers();
