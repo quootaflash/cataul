@@ -1499,26 +1499,25 @@
         const paymentView = document.getElementById('paymentView');
 
         // ============================================================
-        // LOGIC UTAMA: PERBAIKAN BUG CHECKOUT & USER ID
+        // LOGIC UTAMA: PERBAIKAN BUG CHECKOUT
         // ============================================================
         document.getElementById('btn-goto-payment').onclick = async function() {
             
-            // 1. DOUBLE CHECK SESSION (Perbaikan Bug Race Condition)
-            // Kita cek ulang sesi secara paksa saat tombol diklik untuk memastikan data terbaru.
+            // 1. DOUBLE CHECK SESSION (Fix Bug Race Condition)
             const { data: { session } } = await supabase.auth.getSession();
             
-            if (!session?.user) {
-                showToast('Silakan Login terlebih dahulu untuk melanjutkan pembelian.', 'warning');
+            if (!session || !session.user) {
+                showToast('Wajib Login! Mengarahkan ke halaman login...', 'warning');
                 setTimeout(() => {
                     window.location.href = "https://auth.writehub.my.id";
                 }, 1000);
                 return;
             }
 
-            // 2. Update user reference agar pasti ID yang benar yang dipakai
+            // Update user reference untuk memastikan ID benar
             currentUser = session.user;
 
-            // 3. Lanjut Flow Pembelian
+            // 2. Lanjut Flow Pembelian
             if (!currentProduct) return;
             
             const basePrice = Number(getField(currentProduct, 'price')) || 0;
@@ -1561,7 +1560,12 @@
             showModalAdBanner();
         };
 
-        window.openModal = function(p) {
+        // --- PERBAIKAN FUNGSI OPEN MODAL ---
+        window.openModal = async function(p) {
+            // 1. REFRESH SESSION SAAT MODAL DIBUKA (Fixing Bug)
+            const { data: { session } } = await supabase.auth.getSession();
+            currentUser = session?.user || null;
+
             clearPaymentTimer();
             currentProduct = p;
             carouselIndex = 0;
@@ -1636,9 +1640,8 @@
             if (isOrderProcessing) { showToast('Sesi ini sudah berakhir.', 'warning'); return; }
             if (!currentProduct) return;
             if (currentUniqueTotal <= 0) { showToast('Total pembayaran tidak valid', 'error'); return; }
-
+            
             // 1. AMAN KAN USER ID
-            // Pastikan currentUser memiliki ID sebelum dikirim
             if (!currentUser || !currentUser.id) {
                 showToast('Sesi login hilang. Silakan login ulang.', 'error');
                 window.location.href = "https://auth.writehub.my.id";
@@ -1658,7 +1661,6 @@
             const customAddonPrice = Number(getField(currentProduct, 'cover_letter_price')) || 0;
             const finalAddonPrice = (customAddonPrice > 0) ? customAddonPrice : coverLetterPrice;
             
-            // 2. DATA ORDER PASTI ADA USER_ID
             const orderData = {
                 id: currentOrderId,
                 jenis_produk: templateName,
@@ -1667,7 +1669,7 @@
                 harga_addon: isAddOn ? finalAddonPrice : 0,
                 total_bayar: currentUniqueTotal,
                 status: 'Paid',
-                user_id: currentUser.id // PASTIKAN INI TERISI
+                user_id: currentUser.id
             };
 
             const dbResult = await saveOrderToDatabase(orderData);
@@ -1712,8 +1714,6 @@
         // ============================================
         // AUTH LISTENER & INIT
         // ============================================
-        
-        // Fungsi update icon navbar
         function updateNavIcon() {
             const btn = document.getElementById('navUserLink');
             if (!btn) return;
@@ -1735,13 +1735,12 @@
             initSlider();
             
             if (useSupabase) {
-                // 1. Cek Sesi Awal
+                // 1. Check Sesi Awal
                 const { data: { session } } = await supabase.auth.getSession();
                 currentUser = session?.user || null;
                 updateNavIcon();
 
-                // 2. Listener Perubahan State (FIXING THE BUG)
-                // Jika user login di tab lain atau halaman auth, ini langsung update sini
+                // 2. Listener Perubahan State (Realtime Auth)
                 supabase.auth.onAuthStateChange((event, session) => {
                     console.log(`Auth Event: ${event}`);
                     currentUser = session?.user || null;
