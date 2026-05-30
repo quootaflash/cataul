@@ -187,7 +187,7 @@
             text-align: center;
         }
 
-        /* --- USER ICON BUTTON (NEW) --- */
+        /* --- USER ICON BUTTON --- */
         .nav-actions {
             display: flex;
             align-items: center;
@@ -836,7 +836,7 @@
                 <div class="search-suggestions" id="searchSuggestions"></div>
             </div>
 
-            <!-- USER ICON BUTTON (NEW) -->
+            <!-- USER ICON BUTTON -->
             <div class="nav-actions">
                 <a href="https://auth.writehub.my.id" id="navUserLink" class="user-icon-btn" title="Akun Saya">
                     <i class="fas fa-user-circle"></i>
@@ -1031,7 +1031,7 @@
 
         let supabase;
         let useSupabase = false;
-        let currentUser = null; // Menyimpan state login user
+        let currentUser = null;
 
         if (SUPABASE_URL.length > 10 && SUPABASE_ANON_KEY.length > 10) {
             try {
@@ -1059,24 +1059,15 @@
         let paymentMethods = [];
         let adminNumbersList = [];
         let currentUniqueTotal = 0;
-        let currentOrderId = ''; // VARIABLE UNTUK MENYIMPAN ID
+        let currentOrderId = '';
         let paymentLockTimer = null;
         const LOCK_DURATION_MS = 120000;
         let touchStartX = 0;
         let touchEndX = 0;
-        
-        // Flag untuk mencegah klik berulang
         let isOrderProcessing = false;
 
-        // ============================================
-        // ADVANCED AD SYSTEM — MODAL ONLY
-        // ============================================
-        const AD_CONFIG = {
-            tableNames: ['iklan', 'ads', 'ad', 'iklan_banner', 'banner'],
-        };
-
+        const AD_CONFIG = { tableNames: ['iklan', 'ads', 'ad', 'iklan_banner', 'banner'], };
         let modalAdsCache = [];
-        
         let fields = {
             title: 'title', price: 'price', original_price: 'original_price',
             image: 'image', images: 'images', category: 'category',
@@ -1098,7 +1089,7 @@
             }, 3000);
         }
 
-        // --- QRIS MODAL ---
+        // --- QRIS ---
         window.openQrisModal = function(imageUrl) {
             const modal = document.getElementById('qrisModal');
             document.getElementById('qrisDisplayImage').src = imageUrl;
@@ -1108,18 +1099,11 @@
         window.closeQrisModal = function() { document.getElementById('qrisModal').classList.remove('active'); };
         window.copyTotalPrice = function() {
             const text = document.getElementById('qrisDisplayTotal').innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Nominal unik berhasil disalin!', 'success');
-            }).catch(() => {
-                const ta = document.createElement("textarea");
-                ta.value = text; document.body.appendChild(ta); ta.select();
-                document.execCommand("Copy"); ta.remove();
-                showToast('Nominal unik berhasil disalin!', 'success');
-            });
+            navigator.clipboard.writeText(text).then(() => showToast('Nominal unik berhasil disalin!', 'success'));
         };
         document.getElementById('qrisModal').addEventListener('click', (e) => { if(e.target.id === 'qrisModal') closeQrisModal(); });
 
-        // --- TIMER LOGIC ---
+        // --- TIMER ---
         function lockWhatsAppButton() {
             const btn = document.getElementById('btn-confirm-whatsapp');
             if (paymentLockTimer) clearTimeout(paymentLockTimer);
@@ -1129,7 +1113,6 @@
         }
         function unlockWhatsAppButton() {
             const btn = document.getElementById('btn-confirm-whatsapp');
-            // Hanya unlock jika TIDAK sedang memproses (karena tombol hanya bisa 1 kali klik)
             if (!isOrderProcessing) {
                 btn.classList.remove('locked');
                 btn.innerHTML = `<i class="fas fa-check-circle" style="font-size:1.2rem;"></i> Lanjutkan`;
@@ -1140,33 +1123,25 @@
         // --- HELPERS ---
         const formatRupiah = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
         function getField(item, fieldKey) { return item[fields[fieldKey]] || item[fieldKey]; }
-
-        // FUNGSI GENERATE ID PESANAN
         function generateOrderID() {
-            const prefix = "KSP"; 
-            // Karakter unik tanpa angka 0 dan huruf O agar tidak membingungkan
-            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; 
-            let result = prefix + "-";
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
+            const prefix = "KSP"; const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let result = prefix + "-";
+            for (let i = 0; i < 6; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
             return result;
         }
-
         function autoMapColumns(sampleData) {
             if (!sampleData) return;
             const keys = Object.keys(sampleData);
             const map = {
                 title: keys.find(k => k.toLowerCase().includes('nama') || k.toLowerCase().includes('title')) || 'title',
                 price: keys.find(k => k.toLowerCase().includes('harga') || k.toLowerCase().includes('price')) || 'price',
-                original_price: keys.find(k => k.toLowerCase().includes('original') || k.toLowerCase().includes('coret') || k.toLowerCase().includes('asli')) || 'original_price',
-                image: keys.find(k => k.toLowerCase().includes('gambar') || k.toLowerCase().includes('image') || k.toLowerCase().includes('url')) || 'image',
-                images: keys.find(k => k.toLowerCase().includes('images') || k.toLowerCase().includes('galeri') || k.toLowerCase().includes('photos')) || 'images',
+                original_price: keys.find(k => k.toLowerCase().includes('original') || k.toLowerCase().includes('coret')) || 'original_price',
+                image: keys.find(k => k.toLowerCase().includes('gambar') || k.toLowerCase().includes('image')) || 'image',
+                images: keys.find(k => k.toLowerCase().includes('images') || k.toLowerCase().includes('galeri')) || 'images',
                 category: keys.find(k => k.toLowerCase().includes('kategori') || k.toLowerCase().includes('category')) || 'category',
                 description: keys.find(k => k.toLowerCase().includes('deskripsi') || k.toLowerCase().includes('desc')) || 'description',
                 sold_count: keys.find(k => k.toLowerCase().includes('terjual') || k.toLowerCase().includes('sold')) || 'sold_count',
-                cover_letter_price: keys.find(k => k.toLowerCase().includes('cover_letter_price') || k.toLowerCase().includes('harga_surat')) || 'cover_letter_price',
-                allow_addon: keys.find(k => k.toLowerCase().includes('allow_addon') || k.toLowerCase().includes('aktifkan_addon')) || 'allow_addon'
+                cover_letter_price: keys.find(k => k.toLowerCase().includes('cover_letter_price')) || 'cover_letter_price',
+                allow_addon: keys.find(k => k.toLowerCase().includes('allow_addon')) || 'allow_addon'
             };
             fields = map;
         }
@@ -1174,12 +1149,10 @@
         // --- SEARCH ---
         const searchInput = document.getElementById('searchInput');
         const suggestionsBox = document.getElementById('searchSuggestions');
-
         function renderSuggestions(query) {
             suggestionsBox.innerHTML = '';
             if (!query) { suggestionsBox.classList.remove('active'); return; }
-            const suggestionList = [];
-            const seenTitles = new Set();
+            const suggestionList = []; const seenTitles = new Set();
             products.forEach(p => {
                 const title = (getField(p, 'title') || '').toLowerCase();
                 const category = (getField(p, 'category') || '').toLowerCase();
@@ -1188,19 +1161,14 @@
                 if (title.includes(query) || category.includes(query)) {
                     if (!seenTitles.has(displayTitle)) {
                         seenTitles.add(displayTitle);
-                        let score = 0;
-                        if (title === query) score += 1000;
-                        else if (title.startsWith(query)) score += 500;
-                        else if (title.includes(query)) score += 100;
-                        score += (soldCount * 0.1);
+                        let score = (title === query ? 1000 : 0) + (title.startsWith(query) ? 500 : 0) + (title.includes(query) ? 100 : 0) + (soldCount * 0.1);
                         suggestionList.push({ type: 'product', text: displayTitle, sold: soldCount, score });
                     }
                 }
             });
             suggestionList.sort((a, b) => b.score - a.score);
-            if (suggestionList.length === 0) {
-                suggestionsBox.innerHTML = '<div class="no-suggestion">Pencarian tidak ditemukan</div>';
-            } else {
+            if (suggestionList.length === 0) { suggestionsBox.innerHTML = '<div class="no-suggestion">Pencarian tidak ditemukan</div>'; } 
+            else {
                 suggestionList.slice(0, 5).forEach((item, index) => {
                     const div = document.createElement('div');
                     div.className = 'suggestion-item';
@@ -1212,7 +1180,6 @@
             }
             suggestionsBox.classList.add('active');
         }
-
         searchInput.addEventListener('input', (e) => { renderSuggestions(e.target.value.toLowerCase()); filterLogic(); });
         searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { suggestionsBox.classList.remove('active'); searchInput.blur(); } });
         document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) suggestionsBox.classList.remove('active'); });
@@ -1243,7 +1210,6 @@
             }
             if (adminNumbersList.length === 0) adminNumbersList = [DEFAULT_ADMIN_WA];
         }
-
         async function fetchCoverLetterPrice() {
             if (useSupabase) {
                 const { data } = await supabase.from('price_cover_letter').select('price, harga').single();
@@ -1251,17 +1217,13 @@
             }
             updateCoverLetterUI();
         }
-
         async function fetchPaymentMethods() {
             if (useSupabase) {
                 const { data } = await supabase.from('payment').select('*');
                 paymentMethods = (data && data.length > 0) ? data : [];
-            } else {
-                paymentMethods = [];
-            }
+            } else { paymentMethods = []; }
             renderPaymentMethods();
         }
-
         async function fetchProducts() {
             if (useSupabase) {
                 const { data: sample } = await supabase.from('cvs').select('*').limit(1);
@@ -1270,194 +1232,74 @@
                     const { data } = await supabase.from('cvs').select('*');
                     products = data || [];
                     console.log(`[SYSTEM] Loaded ${products.length} products from DB.`);
-                } else { 
-                    console.warn('[SYSTEM] No products found in DB and dummy data removed.');
-                    products = []; 
-                }
-            } else {
-                products = [];
-                console.error('[SYSTEM] Cannot fetch products: No DB Connection.');
-            }
+                } else { products = []; }
+            } else { products = []; }
             renderCategories();
             filterLogic();
         }
 
-        // ============================================
-        // AD SYSTEM — LOGIC
-        // ============================================
-
+        // --- AD SYSTEM LOGIC ---
         function getAdField(ad, possibilities) {
-            for (const key of possibilities) {
-                if (ad[key] !== undefined && ad[key] !== null && ad[key] !== '') {
-                    return ad[key];
-                }
-            }
+            for (const key of possibilities) { if (ad[key] !== undefined && ad[key] !== null && ad[key] !== '') return ad[key]; }
             return null;
         }
-
-        function getAdImageUrl(ad) {
-            return getAdField(ad, [
-                'image_url', 'gambar', 'image', 'url_gambar', 'foto',
-                'img_url', 'banner_url', 'src', 'thumbnail', 'picture'
-            ]);
-        }
-
-        function getAdLinkUrl(ad) {
-            return getAdField(ad, [
-                'link_url', 'link', 'url', 'target_url', 'redirect_url',
-                'destination', 'href', 'go_to'
-            ]) || '#';
-        }
-
-        function isAdActive(ad) {
-            const val = getAdField(ad, ['is_active', 'active', 'aktif', 'status', 'is_show', 'show', 'visible']);
-            if (val === true || val === 1 || val === '1' || val === 'true') return true;
-            if (val === false || val === 0 || val === '0' || val === 'false') return false;
-            return true;
-        }
-
-        function getAdTargetCategory(ad) {
-            return getAdField(ad, [
-                'target_category',
-                'kategori', 
-                'category', 
-                'kategori_iklan', 
-                'product_category',
-                'show_on_category'
-            ]);
-        }
-        
-        function getAdPlacement(ad) {
-            return getAdField(ad, [
-                'placement', 'penempatan', 'posisi', 'position',
-                'location', 'lokasi', 'tipe', 'type', 'show_in'
-            ]);
-        }
-
+        function getAdImageUrl(ad) { return getAdField(ad, ['image_url', 'gambar', 'image', 'url_gambar', 'foto', 'img_url', 'banner_url', 'src', 'thumbnail', 'picture']); }
+        function getAdLinkUrl(ad) { return getAdField(ad, ['link_url', 'link', 'url', 'target_url', 'redirect_url', 'destination', 'href', 'go_to']) || '#'; }
+        function isAdActive(ad) { const val = getAdField(ad, ['is_active', 'active', 'aktif', 'status', 'is_show', 'show', 'visible']); if (val === true || val === 1 || val === '1' || val === 'true') return true; if (val === false || val === 0 || val === '0' || val === 'false') return false; return true; }
+        function getAdTargetCategory(ad) { return getAdField(ad, ['target_category', 'kategori', 'category', 'kategori_iklan', 'product_category', 'show_on_category']); }
+        function getAdPlacement(ad) { return getAdField(ad, ['placement', 'penempatan', 'posisi', 'position', 'location', 'lokasi', 'tipe', 'type', 'show_in']); }
         async function fetchAds() {
-            if (!useSupabase) {
-                console.warn('[AD SYSTEM] Supabase not available.');
-                return [];
-            }
-
+            if (!useSupabase) return [];
             for (const tableName of AD_CONFIG.tableNames) {
                 try {
                     const { data, error } = await supabase.from(tableName).select('*');
-                    
-                    if (error) continue;
-                    if (!data || data.length === 0) continue;
-                    
+                    if (error) continue; if (!data || data.length === 0) continue;
                     const activeAds = data.filter(ad => isAdActive(ad));
-                    
-                    if (activeAds.length > 0) {
-                        console.log(`[AD SYSTEM] Loaded ${activeAds.length} ads from table "${tableName}"`);
-                        return activeAds;
-                    }
-                    
-                } catch (err) {
-                    continue;
-                }
+                    if (activeAds.length > 0) { console.log(`[AD SYSTEM] Loaded ${activeAds.length} ads from "${tableName}"`); return activeAds; }
+                } catch (err) { continue; }
             }
             return [];
         }
-
-        // ============================================
-        // MODAL AD BANNER — ADVANCED SYSTEM
-        // ============================================
-
         function showModalAdBanner() {
             const bannerEl = document.getElementById('modalAdBanner');
             const imgEl = document.getElementById('modalAdImage');
             const linkEl = document.getElementById('modalAdLink');
-
-            bannerEl.classList.remove('visible');
-            bannerEl.style.height = '0px';
-
-            if (modalAdsCache.length === 0) {
-                return;
-            }
-
+            bannerEl.classList.remove('visible'); bannerEl.style.height = '0px';
+            if (modalAdsCache.length === 0) return;
             let selectedAd = null;
-            
             if (currentProduct) {
                 const productCategory = String(getField(currentProduct, 'category')).toLowerCase().trim();
-                
-                const exactMatches = modalAdsCache.filter(ad => {
-                    const adTargetCat = getAdTargetCategory(ad);
-                    if (!adTargetCat) return false;
-                    return String(adTargetCat).toLowerCase().trim() === productCategory;
-                });
-
-                if (exactMatches.length > 0) {
-                    selectedAd = exactMatches[Math.floor(Math.random() * exactMatches.length)];
-                    console.log(`[AD SYSTEM] Showing Exact Match Ad for [${productCategory}]`);
-                } else {
-                    const universalAds = modalAdsCache.filter(ad => {
-                        const cat = getAdTargetCategory(ad);
-                        if (!cat) return false;
-                        const cleanCat = String(cat).toLowerCase().trim();
-                        return cleanCat === '*' || cleanCat === 'all' || cleanCat === 'universal';
-                    });
-
-                    if (universalAds.length > 0) {
-                        selectedAd = universalAds[Math.floor(Math.random() * universalAds.length)];
-                        console.log(`[AD SYSTEM] Showing Universal Ad (No exact match for [${productCategory}])`);
-                    }
+                const exactMatches = modalAdsCache.filter(ad => String(getAdTargetCategory(ad)).toLowerCase().trim() === productCategory);
+                if (exactMatches.length > 0) selectedAd = exactMatches[Math.floor(Math.random() * exactMatches.length)];
+                else {
+                    const universalAds = modalAdsCache.filter(ad => { const cat = getAdTargetCategory(ad); if (!cat) return false; const cleanCat = String(cat).toLowerCase().trim(); return cleanCat === '*' || cleanCat === 'all' || cleanCat === 'universal'; });
+                    if (universalAds.length > 0) selectedAd = universalAds[Math.floor(Math.random() * universalAds.length)];
                 }
             }
-
             if (selectedAd) {
-                const imageUrl = getAdImageUrl(selectedAd);
-                const linkUrl = getAdLinkUrl(selectedAd);
-
+                const imageUrl = getAdImageUrl(selectedAd); const linkUrl = getAdLinkUrl(selectedAd);
                 if (imageUrl) {
                     linkEl.href = linkUrl;
-
                     function revealBanner() {
                         const targetRatio = 350 / 1280;
                         const parentWidth = bannerEl.parentElement ? bannerEl.parentElement.offsetWidth : 400;
                         let bannerHeight = Math.round(parentWidth * targetRatio);
                         bannerHeight = Math.max(60, Math.min(bannerHeight, 180));
-
                         bannerEl.style.height = bannerHeight + 'px';
-                        requestAnimationFrame(() => {
-                            bannerEl.classList.add('visible');
-                        });
+                        requestAnimationFrame(() => bannerEl.classList.add('visible'));
                     }
-
-                    if (imgEl.src === imageUrl && imgEl.complete && imgEl.naturalWidth > 0) {
-                        requestAnimationFrame(revealBanner);
-                    } else {
+                    if (imgEl.src === imageUrl && imgEl.complete && imgEl.naturalWidth > 0) { requestAnimationFrame(revealBanner); } 
+                    else {
                         let bannerRevealed = false;
-                        const onImgReady = () => {
-                            if (bannerRevealed) return;
-                            bannerRevealed = true;
-                            revealBanner();
-                        };
-                        const onImgError = () => {
-                            if (bannerRevealed) return;
-                            bannerRevealed = true;
-                        };
-
-                        imgEl.onload = onImgReady;
-                        imgEl.onerror = onImgError;
-                        imgEl.src = imageUrl;
-                        
-                        setTimeout(() => {
-                            if (!bannerRevealed) {
-                                bannerRevealed = true;
-                            }
-                        }, 3000);
+                        const onImgReady = () => { if (bannerRevealed) return; bannerRevealed = true; revealBanner(); };
+                        const onImgError = () => { if (bannerRevealed) return; bannerRevealed = true; };
+                        imgEl.onload = onImgReady; imgEl.onerror = onImgError; imgEl.src = imageUrl;
+                        setTimeout(() => { if (!bannerRevealed) bannerRevealed = true; }, 3000);
                     }
                 }
             }
         }
-
-        function hideModalAdBanner() {
-            const bannerEl = document.getElementById('modalAdBanner');
-            bannerEl.classList.remove('visible');
-            bannerEl.style.height = '0px';
-        }
+        function hideModalAdBanner() { const bannerEl = document.getElementById('modalAdBanner'); bannerEl.classList.remove('visible'); bannerEl.style.height = '0px'; }
 
         // --- CARD SLIDERS ---
         const cardSliders = {};
@@ -1471,8 +1313,6 @@
             const stop = () => { clearInterval(interval); };
             cardElement.addEventListener('mouseenter', stop);
             cardElement.addEventListener('mouseleave', start);
-            cardElement.addEventListener('touchstart', stop, { passive: true });
-            cardElement.addEventListener('touchend', start, { passive: true });
             cardSliders[productId] = { start, stop, move, index };
             start();
         }
@@ -1481,16 +1321,8 @@
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-            
-            if (!useSupabase) {
-                 grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">Database tidak terhubung. Mohon periksa konfigurasi.</div>';
-                 return;
-            }
-
-            if (filteredProducts.length === 0) {
-                grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">Produk tidak ditemukan.</div>';
-                return;
-            }
+            if (!useSupabase) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">Database tidak terhubung.</div>'; return; }
+            if (filteredProducts.length === 0) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">Produk tidak ditemukan.</div>'; return; }
             filteredProducts.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'cv-card';
@@ -1498,54 +1330,27 @@
                 const title = getField(p, 'title');
                 const price = getField(p, 'price');
                 const originalPrice = getField(p, 'original_price');
-                const category = getField(p, 'category');
                 const image = getField(p, 'image');
                 const extraImages = getField(p, 'images');
                 const soldCount = getField(p, 'sold_count');
                 const pId = getField(p, 'id') || Math.random();
-
                 const safePrice = (price && !isNaN(Number(price))) ? Number(price) : 0;
                 const safeOriginalPrice = (originalPrice && !isNaN(Number(originalPrice))) ? Number(originalPrice) : 0;
-
-                let priceHTML = '';
-                if (safeOriginalPrice > 0 && safeOriginalPrice > safePrice) {
-                    priceHTML = `<div class="price-original">${formatRupiah(safeOriginalPrice)}</div><div class="price-main">${formatRupiah(safePrice)}</div>`;
-                } else {
-                    priceHTML = `<div class="price-main">${formatRupiah(safePrice)}</div>`;
-                }
-
+                let priceHTML = safeOriginalPrice > 0 && safeOriginalPrice > safePrice ? `<div class="price-original">${formatRupiah(safeOriginalPrice)}</div><div class="price-main">${formatRupiah(safePrice)}</div>` : `<div class="price-main">${formatRupiah(safePrice)}</div>`;
                 let allCardImages = [image];
                 if (Array.isArray(extraImages) && extraImages.length > 0) allCardImages = [image, ...extraImages].filter(img => img);
-
                 let slidesHTML = '';
-                allCardImages.forEach(imgSrc => {
-                    slidesHTML += `<div class="card-slide"><img src="${imgSrc || 'https://picsum.photos/seed/fallback/600/600'}" loading="lazy" alt="${title}" onerror="this.src='https://picsum.photos/seed/error/600/600'"></div>`;
-                });
-
-                card.innerHTML = `
-                    <div class="card-image">
-                        <div class="card-slider-container">${slidesHTML}</div>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="card-title">${title || 'Tanpa Judul'}</h3>
-                        <div class="card-footer">
-                            <div class="price-container">${priceHTML}</div>
-                            <div class="sold-info">${soldCount || 0} Terpakai</div>
-                        </div>
-                    </div>`;
+                allCardImages.forEach(imgSrc => { slidesHTML += `<div class="card-slide"><img src="${imgSrc || 'https://picsum.photos/seed/fallback/600/600'}" loading="lazy" alt="${title}" onerror="this.src='https://picsum.photos/seed/error/600/600'"></div>`; });
+                card.innerHTML = `<div class="card-image"><div class="card-slider-container">${slidesHTML}</div></div><div class="card-content"><h3 class="card-title">${title || 'Tanpa Judul'}</h3><div class="card-footer"><div class="price-container">${priceHTML}</div><div class="sold-info">${soldCount || 0} Terpakai</div></div></div>`;
                 grid.appendChild(card);
                 initCardSlider(card, pId);
             });
         }
 
-        // --- RENDER PAYMENT ---
         function renderPaymentMethods() {
             const container = document.getElementById('paymentMethodsList');
             container.innerHTML = '';
-            if (paymentMethods.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Metode pembayaran tidak tersedia saat ini.</div>';
-                return;
-            }
+            if (paymentMethods.length === 0) { container.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">Metode pembayaran tidak tersedia saat ini.</div>'; return; }
             paymentMethods.forEach(method => {
                 const div = document.createElement('div');
                 const isQRIS = (method.bank_name || '').toLowerCase().includes('qris') || method.type === 'qris';
@@ -1554,45 +1359,22 @@
                     div.style.flexDirection = 'column';
                     div.style.alignItems = 'flex-start';
                     const qrisImg = method.image || "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Logo_QRIS.svg/1200px-Logo_QRIS.svg.png";
-                    div.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:12px;">
-                            <div class="bank-info"><h4><i class="fas fa-qrcode"></i> QRIS</h4></div>
-                        </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
-                            <img src="${qrisImg}" class="qris-img" alt="QRIS">
-                            <button class="btn-copy" onclick="openQrisModal('${qrisImg}')"><i class="fas fa-expand"></i> Scan</button>
-                        </div>`;
+                    div.innerHTML = `<div style="display:flex;justify-content:space-between;width:100%;margin-bottom:12px;"><div class="bank-info"><h4><i class="fas fa-qrcode"></i> QRIS</h4></div></div><div style="display:flex;align-items:center;justify-content:space-between;width:100%;"><img src="${qrisImg}" class="qris-img" alt="QRIS"><button class="btn-copy" onclick="openQrisModal('${qrisImg}')"><i class="fas fa-expand"></i> Scan</button></div>`;
                 } else {
                     div.className = 'payment-option-card';
                     const bank = method.bank_name || method.nama_bank || 'Bank';
                     const number = method.account_number || method.no_rekening || '---';
                     const owner = method.owner_name || method.atas_nama || '---';
                     let logoUrl = method.logo || `https://placehold.co/100x50/f8f9fa/333333?text=${encodeURIComponent(bank)}&font=roboto`;
-                    div.innerHTML = `
-                        <div class="bank-info">
-                            <img src="${logoUrl}" class="bank-logo-img" alt="${bank}">
-                            <div class="bank-details">
-                                <h4>${bank}</h4>
-                                <div class="bank-number">${number}</div>
-                                <div class="bank-name">a.n ${owner}</div>
-                            </div>
-                        </div>
-                        <button class="btn-copy" onclick="copyToClipboard('${number}')"><i class="far fa-copy"></i> Salin</button>`;
+                    div.innerHTML = `<div class="bank-info"><img src="${logoUrl}" class="bank-logo-img" alt="${bank}"><div class="bank-details"><h4>${bank}</h4><div class="bank-number">${number}</div><div class="bank-name">a.n ${owner}</div></div></div><button class="btn-copy" onclick="copyToClipboard('${number}')"><i class="far fa-copy"></i> Salin</button>`;
                 }
                 container.appendChild(div);
             });
         }
-
         window.copyToClipboard = function(text) {
             const sanitized = String(text).replace(/[^\d\s\-\/.]/g, '').trim();
-            navigator.clipboard.writeText(sanitized).then(() => {
-                showToast(`Nomor ${sanitized} berhasil disalin!`, 'success');
-            }).catch(() => {
-                const ta = document.createElement("textarea"); ta.value = sanitized;
-                document.body.appendChild(ta); ta.select(); document.execCommand("Copy"); ta.remove();
-                showToast(`Nomor ${sanitized} berhasil disalin!`, 'success');
-            });
-        }
+            navigator.clipboard.writeText(sanitized).then(() => showToast(`Nomor ${sanitized} berhasil disalin!`, 'success'));
+        };
 
         // --- HERO SLIDER ---
         let slideIndex = 0, slideInterval;
@@ -1613,27 +1395,20 @@
             const heroEl = document.getElementById('heroSlider');
             heroEl.addEventListener('mouseenter', stopSlide);
             heroEl.addEventListener('mouseleave', startSlide);
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) stopSlide();
-                else startSlide();
-            });
+            document.addEventListener('visibilitychange', () => { if (document.hidden) stopSlide(); else startSlide(); });
         }
         function goToSlide(n) {
-            const slides = document.querySelectorAll('.slide');
-            const dots = document.querySelectorAll('.dot');
+            const slides = document.querySelectorAll('.slide'); const dots = document.querySelectorAll('.dot');
             if (n < 0 || n >= slides.length) return;
-            slides.forEach(s => s.classList.remove('active'));
-            dots.forEach(d => d.classList.remove('active'));
-            slides[n].classList.add('active');
-            dots[n].classList.add('active');
+            slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active'));
+            slides[n].classList.add('active'); dots[n].classList.add('active');
             slideIndex = n;
         }
         function nextSlide() { goToSlide((slideIndex + 1) % sliderData.length); }
         function prevSlide() { goToSlide((slideIndex - 1 + sliderData.length) % sliderData.length); }
         function startSlide() { stopSlide(); slideInterval = setInterval(nextSlide, 5000); }
         function stopSlide() { if (slideInterval) { clearInterval(slideInterval); slideInterval = null; } }
-        window.nextSlide = nextSlide;
-        window.prevSlide = prevSlide;
+        window.nextSlide = nextSlide; window.prevSlide = prevSlide;
 
         // --- FILTER ---
         window.setCategory = function(cat, el) {
@@ -1657,20 +1432,13 @@
         // --- MODAL LOGIC ---
         let currentProduct = null, carouselIndex = 0, carouselImages = [];
         const trackEl = document.getElementById('carouselTrack');
-        
         let lastSwipeTime = 0;
-        trackEl.addEventListener('touchstart', e => { 
-            touchStartX = e.changedTouches[0].screenX; 
-        }, {passive: true});
+        trackEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
         trackEl.addEventListener('touchend', e => {
-            const now = Date.now();
-            if (now - lastSwipeTime < 300) return;
-            lastSwipeTime = now;
-            
+            const now = Date.now(); if (now - lastSwipeTime < 300) return; lastSwipeTime = now;
             touchEndX = e.changedTouches[0].screenX;
             const diff = touchEndX - touchStartX;
-            if (diff < -50) moveCarousel(1);
-            else if (diff > 50) moveCarousel(-1);
+            if (diff < -50) moveCarousel(1); else if (diff > 50) moveCarousel(-1);
         }, {passive: true});
 
         window.moveCarousel = function(direction) {
@@ -1702,14 +1470,10 @@
             const addonPriceText = document.getElementById('coverLetterPriceText');
             const allowAddon = getField(currentProduct, 'allow_addon');
             const clPrice = getField(currentProduct, 'cover_letter_price');
-            
             const isNotAllowed = allowAddon === false || allowAddon === 'false' || allowAddon === 0 || allowAddon === '0';
             const hasNoPrice = clPrice === null || clPrice === undefined;
-            
-            if (isNotAllowed || hasNoPrice) {
-                addonSection.style.display = 'none';
-                toggleSwitch.checked = false;
-            } else {
+            if (isNotAllowed || hasNoPrice) { addonSection.style.display = 'none'; toggleSwitch.checked = false; } 
+            else {
                 addonSection.style.display = 'block';
                 const customPrice = Number(clPrice);
                 const finalPrice = (!isNaN(customPrice) && customPrice > 0) ? customPrice : coverLetterPrice;
@@ -1727,20 +1491,23 @@
             const isAddOn = toggleSwitch.checked;
             const finalPrice = isAddOn ? (basePrice + finalAddonPrice) : basePrice;
             const priceWrap = document.getElementById('m-price-wrap');
-            
-            if (originalPrice > 0 && originalPrice > basePrice) {
-                priceWrap.innerHTML = `<div class="modal-price-original">${formatRupiah(originalPrice)}</div><div class="modal-price-final">${formatRupiah(finalPrice)}</div>`;
-            } else {
-                priceWrap.innerHTML = `<div class="modal-price-final">${formatRupiah(finalPrice)}</div>`;
-            }
+            if (originalPrice > 0 && originalPrice > basePrice) { priceWrap.innerHTML = `<div class="modal-price-original">${formatRupiah(originalPrice)}</div><div class="modal-price-final">${formatRupiah(finalPrice)}</div>`; } 
+            else { priceWrap.innerHTML = `<div class="modal-price-final">${formatRupiah(finalPrice)}</div>`; }
         }
 
         const productView = document.getElementById('productView');
         const paymentView = document.getElementById('paymentView');
 
-        document.getElementById('btn-goto-payment').onclick = function() {
-            // --- CEK LOGIN (FITUR BARU) ---
-            if (!currentUser) {
+        // ============================================================
+        // LOGIC UTAMA: PERBAIKAN BUG CHECKOUT & USER ID
+        // ============================================================
+        document.getElementById('btn-goto-payment').onclick = async function() {
+            
+            // 1. DOUBLE CHECK SESSION (Perbaikan Bug Race Condition)
+            // Kita cek ulang sesi secara paksa saat tombol diklik untuk memastikan data terbaru.
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session?.user) {
                 showToast('Silakan Login terlebih dahulu untuk melanjutkan pembelian.', 'warning');
                 setTimeout(() => {
                     window.location.href = "https://auth.writehub.my.id";
@@ -1748,6 +1515,10 @@
                 return;
             }
 
+            // 2. Update user reference agar pasti ID yang benar yang dipakai
+            currentUser = session.user;
+
+            // 3. Lanjut Flow Pembelian
             if (!currentProduct) return;
             
             const basePrice = Number(getField(currentProduct, 'price')) || 0;
@@ -1755,12 +1526,8 @@
             const customAddonPrice = Number(getField(currentProduct, 'cover_letter_price')) || 0;
             const finalAddonPrice = (customAddonPrice > 0) ? customAddonPrice : coverLetterPrice;
             
-            if (basePrice <= 0) {
-                showToast('Harga produk tidak valid', 'error');
-                return;
-            }
+            if (basePrice <= 0) { showToast('Harga produk tidak valid', 'error'); return; }
 
-            // 1. Generate ID Pesanan
             currentOrderId = generateOrderID();
             document.getElementById('p-order-id').innerText = currentOrderId;
 
@@ -1772,12 +1539,8 @@
             document.getElementById('p-product-name').innerText = getField(currentProduct, 'title');
             document.getElementById('p-unit-price').innerText = formatRupiah(basePrice);
             const addonRow = document.getElementById('row-addon');
-            if (isAddOn) { 
-                addonRow.style.display = 'flex'; 
-                document.getElementById('p-addon-price').innerText = formatRupiah(finalAddonPrice); 
-            } else { 
-                addonRow.style.display = 'none'; 
-            }
+            if (isAddOn) { addonRow.style.display = 'flex'; document.getElementById('p-addon-price').innerText = formatRupiah(finalAddonPrice); } 
+            else { addonRow.style.display = 'none'; }
             
             const totalEl = document.getElementById('p-total-price');
             totalEl.innerText = formatRupiah(totalWithUnique);
@@ -1803,8 +1566,6 @@
             currentProduct = p;
             carouselIndex = 0;
             toggleSwitch.checked = false;
-            
-            // RESET FLAG HANYA SAAT BUKA MODAL BARU (Sesi Baru)
             isOrderProcessing = false;
 
             document.getElementById('m-cat').innerText = getField(p, 'category') || 'CATEGORY';
@@ -1815,10 +1576,7 @@
             const mainImage = getField(p, 'image');
             const extraImages = getField(p, 'images');
             carouselImages = (Array.isArray(extraImages) && extraImages.length > 0) ? [mainImage, ...extraImages].filter(img => img) : [mainImage];
-            
-            if (carouselImages.length === 0 || !carouselImages[0]) {
-                carouselImages = ['https://picsum.photos/seed/nofallback/800/600'];
-            }
+            if (carouselImages.length === 0 || !carouselImages[0]) carouselImages = ['https://picsum.photos/seed/nofallback/800/600'];
 
             const track = document.getElementById('carouselTrack');
             track.innerHTML = '';
@@ -1845,8 +1603,6 @@
 
             document.getElementById('productModal').classList.add('active');
             document.body.style.overflow = 'hidden';
-
-            // Jalankan logika iklan modal (Google Ads Style)
             setTimeout(() => showModalAdBanner(), 150);
         }
 
@@ -1861,22 +1617,12 @@
         document.getElementById('productModal').addEventListener('click', (e) => { if(e.target.id === 'productModal') closeModal(); });
 
         // ============================================
-        // LOGIKA INTI: SIMPAN ORDER & KONFIRMASI WA
+        // SIMPAN ORDER & KONFIRMASI WA
         // ============================================
-        
-        // Fungsi untuk menyimpan ke tabel 'orders' di Supabase
         async function saveOrderToDatabase(orderData) {
-            if (!useSupabase) {
-                console.warn("Database not connected, skipping order save.");
-                return { error: null }; // Biarkan lanjut ke WA walau DB mati (optional)
-            }
-
+            if (!useSupabase) { console.warn("Database not connected."); return { error: null }; }
             try {
-                const { data, error } = await supabase
-                    .from('orders')
-                    .insert([orderData])
-                    .select();
-
+                const { data, error } = await supabase.from('orders').insert([orderData]).select();
                 if (error) throw error;
                 console.log("Order saved:", data);
                 return { error: null, data };
@@ -1887,20 +1633,18 @@
         }
 
         document.getElementById('btn-confirm-whatsapp').onclick = async function() {
-            // 1. Cegah Klik Berulang (Jika sedang memproses, abaikan)
-            if (isOrderProcessing) {
-                showToast('Sesi ini sudah berakhir. Silakan refresh halaman.', 'warning');
-                return;
-            }
-
+            if (isOrderProcessing) { showToast('Sesi ini sudah berakhir.', 'warning'); return; }
             if (!currentProduct) return;
-            
-            if (currentUniqueTotal <= 0) {
-                showToast('Total pembayaran tidak valid, silakan coba lagi', 'error');
+            if (currentUniqueTotal <= 0) { showToast('Total pembayaran tidak valid', 'error'); return; }
+
+            // 1. AMAN KAN USER ID
+            // Pastikan currentUser memiliki ID sebelum dikirim
+            if (!currentUser || !currentUser.id) {
+                showToast('Sesi login hilang. Silakan login ulang.', 'error');
+                window.location.href = "https://auth.writehub.my.id";
                 return;
             }
 
-            // Lock UI & Flag (PERMANEN UNTUK SESI INI)
             isOrderProcessing = true;
             const btn = this;
             btn.disabled = true;
@@ -1914,7 +1658,7 @@
             const customAddonPrice = Number(getField(currentProduct, 'cover_letter_price')) || 0;
             const finalAddonPrice = (customAddonPrice > 0) ? customAddonPrice : coverLetterPrice;
             
-            // 2. Siapkan Data untuk Database
+            // 2. DATA ORDER PASTI ADA USER_ID
             const orderData = {
                 id: currentOrderId,
                 jenis_produk: templateName,
@@ -1923,56 +1667,37 @@
                 harga_addon: isAddOn ? finalAddonPrice : 0,
                 total_bayar: currentUniqueTotal,
                 status: 'Paid',
-                user_id: currentUser.id // <--- PENTING: LINK KE USER (AUTH)
+                user_id: currentUser.id // PASTIKAN INI TERISI
             };
 
-            // 3. Simpan ke Database
             const dbResult = await saveOrderToDatabase(orderData);
 
-            // 4. Jika DB Error: TOMBOL TETAP TERKUNCI (Sesuai aturan 1x klik)
             if (dbResult.error) {
-                showToast('Terjadi kesalahan sistem. Pesanan gagal tersimpan. Silakan Refresh Halaman.', 'error');
-                // TIDAK mereset isOrderProcessing
-                // TIDAK meng-enable tombol
+                showToast('Terjadi kesalahan sistem. Pesanan gagal tersimpan.', 'error');
                 return; 
             }
 
-            // 5. Jika DB Sukses: Siapkan Pesan WA
             let message = `Halo Min, saya ingin membeli CV berikut:\n\n*Order ID:* ${currentOrderId}\n*Jenis CV:* ${templateName}\n*Total Pembayaran (Unik):* ${formattedTotal}`;
-            
-            if (isAddOn) {
-                message += `\n\n*Addon:* Surat Lamaran Kerja (+${formatRupiah(finalAddonPrice)})`;
-            }
-            message += `\n\nSaya sudah transfer sesuai nominal unik. Mohon segera diproses ya Min. Berikut bukti transfer yang saya lampirkan`;
+            if (isAddOn) message += `\n\n*Addon:* Surat Lamaran Kerja (+${formatRupiah(finalAddonPrice)})`;
+            message += `\n\nSaya sudah transfer sesuai nominal unik. Mohon segera diproses ya Min.`;
 
-            // 6. Buka WhatsApp
             const adminNumber = getRotatedAdminNumber();
             
             setTimeout(() => {
-                try {
-                    window.open(`https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`, '_blank');
-                } catch (err) {
+                try { window.open(`https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`, '_blank'); } 
+                catch (err) {
                     const a = document.createElement('a');
-                    a.href = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`;
-                    a.target = '_blank';
-                    a.rel = 'noopener noreferrer';
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
+                    a.href = `https://wa.me/${adminNumber}?text=${encodeURIComponent(message)}`; a.target = '_blank';
+                    document.body.appendChild(a); a.click(); a.remove();
                 }
             }, 500);
 
-            // 7. Update UI ke Status "Completed"
             showToast('Pesanan Berhasil Disimpan! Mengalihkan ke WhatsApp...', 'success');
             btn.classList.remove('locked');
             btn.classList.add('completed');
             btn.innerHTML = `<i class="fas fa-check"></i> Pesanan Terkirim`;
 
-            // 8. Tutup Modal Otomatis setelah delay singkat
-            setTimeout(() => {
-                closeModal();
-                // Flag reset hanya saat user refresh atau buka produk baru
-            }, 2000); 
+            setTimeout(() => { closeModal(); }, 2000); 
         }
 
         function getRotatedAdminNumber() {
@@ -1985,41 +1710,44 @@
         }
 
         // ============================================
-        // AUTH & NAVBAR LOGIC (NEW)
+        // AUTH LISTENER & INIT
         // ============================================
         
-        async function checkSession() {
-            if (!useSupabase) return;
-            const { data: { session } } = await supabase.auth.getSession();
-            currentUser = session?.user || null;
-            updateNavIcon();
-        }
-
+        // Fungsi update icon navbar
         function updateNavIcon() {
             const btn = document.getElementById('navUserLink');
             if (!btn) return;
-
             if (currentUser) {
-                // User Sudah Login
                 btn.classList.add('logged-in');
                 btn.innerHTML = `<i class="fas fa-user-check"></i>`;
-                btn.href = "https://auth.writehub.my.id"; // Link ke Dashboard
+                btn.href = "https://auth.writehub.my.id";
                 btn.title = "Menu Dashboard";
             } else {
-                // User Belum Login
                 btn.classList.remove('logged-in');
                 btn.innerHTML = `<i class="fas fa-user-circle"></i>`;
-                btn.href = "https://auth.writehub.my.id"; // Link ke Halaman Login/Register
+                btn.href = "https://auth.writehub.my.id";
                 btn.title = "Masuk / Daftar";
             }
         }
 
-        // --- INIT ---
         async function init() {
             console.log('%c[WRITEHUB] Initializing...', 'color: blue; font-weight: bold;');
             initSlider();
             
             if (useSupabase) {
+                // 1. Cek Sesi Awal
+                const { data: { session } } = await supabase.auth.getSession();
+                currentUser = session?.user || null;
+                updateNavIcon();
+
+                // 2. Listener Perubahan State (FIXING THE BUG)
+                // Jika user login di tab lain atau halaman auth, ini langsung update sini
+                supabase.auth.onAuthStateChange((event, session) => {
+                    console.log(`Auth Event: ${event}`);
+                    currentUser = session?.user || null;
+                    updateNavIcon();
+                });
+
                 const ads = await fetchAds();
                 modalAdsCache = ads.filter(ad => {
                     const placement = getAdPlacement(ad);
@@ -2027,10 +1755,6 @@
                     const p = String(placement).toLowerCase().trim();
                     return p.includes('modal') || p.includes('product') || p.includes('produk') || p.includes('detail') || p.includes('inside');
                 });
-                console.log(`[AD SYSTEM] Prepared ${modalAdsCache.length} modal ads.`);
-                
-                // Cek Session saat init
-                await checkSession();
             }
             
             await fetchAdminNumbers();
@@ -2057,23 +1781,12 @@
         });
         document.addEventListener('wheel', function(e) { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
 
-        // --- BACK TO TOP LOGIC ---
         const backToTopBtn = document.getElementById('backToTopBtn');
-
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
+            if (window.scrollY > 300) backToTopBtn.classList.add('visible');
+            else backToTopBtn.classList.remove('visible');
         });
-
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+        backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     </script>
 </body>
 </html>
